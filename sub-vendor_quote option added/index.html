@@ -72,7 +72,7 @@
         <div style="font-size:9.5px; letter-spacing:.1em; color:#7f95a8; text-transform:uppercase;">Enquiry to Completion</div>
       </div>
     </div>
-    <nav style="padding:14px 12px; display:flex; flex-direction:column; gap:3px; flex:1; overflow-y:auto; min-height:0;">
+    <nav style="padding:14px 12px; display:flex; flex-direction:column; gap:3px; flex:1;">
       <sc-for list="{{ navItems }}" as="nav" hint-placeholder-count="0">
         <button onClick="{{ nav.onClick }}" style="{{ nav.style }}" style-hover="background:rgba(255,255,255,.07);">
           <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; width:18px; opacity:.7;">{{ nav.code }}</span>
@@ -104,11 +104,9 @@
         <span style="position:absolute; left:13px; top:50%; transform:translateY(-50%); color:#90a0ad; font-size:13px;">⌕</span>
         <input value="{{ search }}" onInput="{{ onSearch }}" placeholder="Search any case, vessel, company, vendor, employee…" style="width:100%; padding:10px 12px 10px 32px; border:1px solid #cdd7df; border-radius:8px; font-size:13px; outline:none; background:#f6f9fb;" style-focus="border-color:#2c6e9c; background:#fff;" />
       </div>
-      <sc-if value="{{ canNewEnquiry }}" hint-placeholder-val="{{ true }}">
       <button onClick="{{ onNewEnquiry }}" style="flex:0 0 auto; background:#0f2840; color:#fff; border:none; padding:10px 18px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:7px;" style-hover="background:#163651;">
         <span style="font-size:15px; line-height:1;">＋</span> New Enquiry
       </button>
-      </sc-if>
     </header>
 
     <div style="padding:24px 28px 60px; flex:1;">
@@ -185,7 +183,10 @@
                 <div>
                   <label style="font-size:11px; font-weight:600; color:#6c7c8a; text-transform:uppercase; letter-spacing:.06em;">Region</label>
                   <select value="{{ form.region }}" onChange="{{ onField.region }}" style="margin-top:6px; width:100%; padding:10px 10px; border:1px solid #cdd7df; border-radius:8px; font-size:13px; background:#fff;">
-                    <sc-for list="{{ regionOptions }}" as="rg" hint-placeholder-count="0"><option value="{{ rg }}">{{ rg }}</option></sc-for>
+                    <option value="IND">IND</option>
+                    <option value="SG">SG</option>
+                    <option value="UAE">UAE</option>
+                    <option value="GLB">GLB</option>
                   </select>
                 </div>
                 <div>
@@ -1147,7 +1148,6 @@
           <div style="display:flex; gap:6px; margin-bottom:20px;">
             <button onClick="{{ onSettingsCustomers }}" style="{{ custTabStyle }}">Customers</button>
             <button onClick="{{ onSettingsSubvendors }}" style="{{ subvTabStyle }}">Sub-vendors</button>
-            <button onClick="{{ onSettingsRegions }}" style="{{ regionTabStyle }}">Regions</button>
             <button onClick="{{ onSettingsUsers }}" style="{{ userTabStyle }}">User Management</button>
             <button onClick="{{ onSettingsCommission }}" style="{{ commTabStyle }}">Commission</button>
           </div>
@@ -1265,15 +1265,10 @@
                 <input value="{{ userForm.name }}" onInput="{{ onUser.name }}" style="margin:5px 0 12px; width:100%; padding:9px 11px; border:1px solid #cdd7df; border-radius:8px; font-size:13px;" />
                 <label style="font-size:11px; font-weight:600; color:#6c7c8a; text-transform:uppercase; letter-spacing:.06em;">Email</label>
                 <input value="{{ userForm.email }}" onInput="{{ onUser.email }}" style="margin:5px 0 12px; width:100%; padding:9px 11px; border:1px solid #cdd7df; border-radius:8px; font-size:13px;" />
-                <label style="font-size:11px; font-weight:600; color:#6c7c8a; text-transform:uppercase; letter-spacing:.06em;">Roles &amp; Permissions <span style="color:#9aa8b4;">· assign one or more</span></label>
-                <div style="margin:6px 0 14px; display:flex; flex-direction:column; gap:5px;">
-                  <sc-for list="{{ permCheckboxes }}" as="pm" hint-placeholder-count="0">
-                    <button onClick="{{ pm.onToggle }}" style="{{ pm.style }}" type="button">
-                      <span style="{{ pm.boxStyle }}">{{ pm.check }}</span>
-                      <span style="text-align:left; flex:1;">{{ pm.label }}</span>
-                    </button>
-                  </sc-for>
-                </div>
+                <label style="font-size:11px; font-weight:600; color:#6c7c8a; text-transform:uppercase; letter-spacing:.06em;">Role</label>
+                <select value="{{ userForm.role }}" onChange="{{ onUser.role }}" style="margin:5px 0 14px; width:100%; padding:9px 11px; border:1px solid #cdd7df; border-radius:8px; font-size:13px; background:#fff;">
+                  <sc-for list="{{ roleOptions }}" as="ro" hint-placeholder-count="0"><option value="{{ ro.value }}">{{ ro.label }}</option></sc-for>
+                </select>
                 <label style="font-size:11px; font-weight:600; color:#6c7c8a; text-transform:uppercase; letter-spacing:.06em;">Password <span style="color:#9aa8b4;">· optional</span></label>
                 <input value="{{ userForm.password }}" onInput="{{ onUser.password }}" placeholder="blank = no password" style="margin:5px 0 14px; width:100%; padding:9px 11px; border:1px solid #cdd7df; border-radius:8px; font-size:13px;" />
                 <div style="display:flex; gap:10px;">
@@ -1320,30 +1315,6 @@
           </sc-if>
 
           <!-- commission -->
-          <sc-if value="{{ setIsRegions }}" hint-placeholder-val="{{ false }}">
-            <div style="display:grid; grid-template-columns:340px 1fr; gap:18px; align-items:start;">
-              <div style="background:#fff; border:1px solid #dde5ec; border-radius:12px; padding:18px;">
-                <div style="font-weight:600; font-size:14px; margin-bottom:6px;">Add Region</div>
-                <div style="font-size:12.5px; color:#6c7c8a; margin-bottom:14px; line-height:1.6;">Regions appear in the New Enquiry form and drive document numbering (e.g. <span style="font-family:'IBM Plex Mono',monospace;">QTN-IND-06-2026-001</span>). Use a short code.</div>
-                <label style="font-size:11px; font-weight:600; color:#6c7c8a; text-transform:uppercase; letter-spacing:.06em;">Region Code</label>
-                <div style="display:flex; gap:8px; margin-top:6px;">
-                  <input value="{{ regionInput }}" onInput="{{ onRegionInput }}" onKeyDown="{{ onRegionKey }}" placeholder="e.g. IND, SG, UAE" style="flex:1; min-width:0; padding:10px 12px; border:1px solid #cdd7df; border-radius:8px; font-size:13px; text-transform:uppercase;" />
-                  <button onClick="{{ onAddRegion }}" style="flex:0 0 auto; background:#1f7a45; border:none; color:#fff; padding:10px 16px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#1a6b3c;">Add</button>
-                </div>
-              </div>
-              <div style="background:#fff; border:1px solid #dde5ec; border-radius:12px; overflow:hidden;">
-                <div style="padding:14px 18px; border-bottom:1px solid #e6ecf1; font-weight:600; font-size:14px;">Regions <span style="color:#9aa8b4; font-weight:400;">· {{ regionCount }} configured</span></div>
-                <div style="padding:14px 18px; display:flex; flex-wrap:wrap; gap:9px;">
-                  <sc-for list="{{ regionRows }}" as="rg" hint-placeholder-count="0">
-                    <span style="display:inline-flex; align-items:center; gap:9px; background:#eef5fb; border:1px solid #cfe1ef; border-radius:8px; padding:8px 12px; font-size:13px; font-family:'IBM Plex Mono',monospace; font-weight:600; color:#1c4e75;">{{ rg.name }} <button onClick="{{ rg.onRemove }}" style="background:#fff; border:1px solid #e2c4c4; color:#bd4b48; border-radius:5px; width:22px; height:22px; cursor:pointer; font-size:13px; line-height:1;">×</button></span>
-                  </sc-for>
-                  <sc-if value="{{ noRegions }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px; color:#92a1ad; padding:6px;">No regions yet — add one on the left.</div></sc-if>
-                </div>
-              </div>
-            </div>
-          </sc-if>
-
-          <!-- commission -->
           <sc-if value="{{ setIsCommission }}" hint-placeholder-val="{{ false }}">
             <div style="display:grid; grid-template-columns:420px 1fr; gap:18px; align-items:start;">
               <div style="background:#fff; border:1px solid #dde5ec; border-radius:12px; padding:18px;">
@@ -1384,34 +1355,6 @@
       <!-- ============ SERVICE REPORTS ============ -->
       <sc-if value="{{ isService }}" hint-placeholder-val="{{ false }}">
         <div style="max-width:1080px;">
-          <sc-if value="{{ serviceList }}" hint-placeholder-val="{{ true }}">
-            <div style="background:#fff; border:1px solid #dde5ec; border-radius:12px; overflow:hidden;">
-              <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid #e6ecf1;">
-                <div style="font-weight:600; font-size:14px;">Service Reports <span style="color:#9aa8b4; font-weight:400;">· {{ serviceCount }} record(s)</span></div>
-                <button onClick="{{ onNewService }}" style="background:#e0742f; border:none; color:#fff; padding:9px 16px; border-radius:8px; font-size:12.5px; font-weight:600; cursor:pointer;" style-hover="background:#c9651f;">＋ New Service Report</button>
-              </div>
-              <div style="overflow-x:auto;">
-                <div style="min-width:760px;">
-                  <div style="display:grid; grid-template-columns:130px 110px 1.2fr 1.2fr 1fr 1fr; background:#f3f7fa; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:#6c7c8a; font-weight:600;">
-                    <div style="padding:11px 14px;">Job No</div><div style="padding:11px 14px;">Date</div><div style="padding:11px 14px;">Vessel</div><div style="padding:11px 14px;">Equipment</div><div style="padding:11px 14px;">Engineer</div><div style="padding:11px 14px;">Order Ref</div>
-                  </div>
-                  <sc-for list="{{ serviceReportRows }}" as="r" hint-placeholder-count="0">
-                    <div onClick="{{ r.onOpen }}" style="display:grid; grid-template-columns:130px 110px 1.2fr 1.2fr 1fr 1fr; align-items:center; border-top:1px solid #eef2f5; cursor:pointer;" style-hover="background:#f7fafc;">
-                      <div style="padding:10px 14px; font-family:'IBM Plex Mono',monospace; font-weight:600; color:#1c4e75;">{{ r.srNo }}</div>
-                      <div style="padding:10px 14px; color:#54646f;">{{ r.dateDisp }}</div>
-                      <div style="padding:10px 14px; font-weight:600;">{{ r.vessel }}</div>
-                      <div style="padding:10px 14px; color:#54646f;">{{ r.equipment }}</div>
-                      <div style="padding:10px 14px; color:#54646f;">{{ r.engineer }}</div>
-                      <div style="padding:10px 14px; font-family:'IBM Plex Mono',monospace; color:#1c4e75;">{{ r.orderNo }}</div>
-                    </div>
-                  </sc-for>
-                </div>
-              </div>
-              <sc-if value="{{ noServiceReports }}" hint-placeholder-val="{{ false }}"><div style="padding:36px; text-align:center; color:#92a1ad; font-size:13px;">No service reports assigned to you yet. Click “＋ New Service Report” to create one.</div></sc-if>
-            </div>
-          </sc-if>
-          <sc-if value="{{ serviceEdit }}" hint-placeholder-val="{{ false }}">
-          <div style="margin-bottom:14px;"><button onClick="{{ onServiceBack }}" style="background:#fff; border:1px solid #cdd7df; color:#54646f; padding:9px 16px; border-radius:8px; font-size:12.5px; font-weight:600; cursor:pointer;" style-hover="background:#f4f7f9;">← Back to list</button></div>
           <div style="background:#fff; border:1px solid #dde5ec; border-radius:12px; overflow:hidden;">
             <div style="padding:16px 22px; background:#0f2840; color:#fff; display:flex; align-items:center; justify-content:space-between;">
               <div style="font-weight:600; font-size:15px;">{{ serviceHeading }}</div>
@@ -1535,7 +1478,6 @@
               </div>
             </div>
           </div>
-          </sc-if>
         </div>
       </sc-if>
 
@@ -1832,7 +1774,7 @@
                     <div style="padding:11px 14px; font-weight:600;">Engineer</div>
                     <div style="padding:11px 14px; font-weight:600;">Order Ref</div>
                   </div>
-                  <sc-for list="{{ reportServiceRows }}" as="r" hint-placeholder-count="0">
+                  <sc-for list="{{ serviceReportRows }}" as="r" hint-placeholder-count="0">
                     <div onClick="{{ r.onOpen }}" style="display:grid; grid-template-columns:130px 110px 1.2fr 1.2fr 1fr 1fr; align-items:center; border-top:1px solid #eef2f5; cursor:pointer;" style-hover="background:#f6fafc;">
                       <div style="padding:10px 14px; font-family:'IBM Plex Mono',monospace; font-weight:600; color:#1c4e75;">{{ r.srNo }}</div>
                       <div style="padding:10px 14px; color:#54646f;">{{ r.dateDisp }}</div>
@@ -1844,8 +1786,8 @@
                   </sc-for>
                 </div>
               </div>
-              <sc-if value="{{ hasReportServiceReports }}" hint-placeholder-val="{{ true }}"></sc-if>
-              <sc-if value="{{ noReportServiceReports }}" hint-placeholder-val="{{ false }}"><div style="padding:36px; text-align:center; color:#92a1ad; font-size:13px;">No service reports yet. Create one from the Service Reports tab or an order.</div></sc-if>
+              <sc-if value="{{ hasServiceReports }}" hint-placeholder-val="{{ true }}"></sc-if>
+              <sc-if value="{{ hasServiceReports }}" hint-placeholder-val="{{ false }}"><div style="padding:36px; text-align:center; color:#92a1ad; font-size:13px;">No service reports yet. Create one from the Service Reports tab or an order.</div></sc-if>
             </div>
           </sc-if>
 
@@ -2135,14 +2077,11 @@ class Component extends DCLogic {
       subvendors: seed.subvendors || [],
       serviceReports: [],
       service: this.blankServiceReport(),
-      serviceMode: 'list',
       users: seed.users,
       customerForm: this.blankCustomer(),
       subvendorForm: this.blankSubvendor(),
       userForm: this.blankUser(),
       settingsTab: 'customers',
-      regions: ['IND','SG','UAE','GLB'],
-      regionInput: '',
       commissionConfig: { mode: 'percent', basis: 'profit', value: '0' },
       reportTab: 'case',
       statusFilter: '',
@@ -2175,7 +2114,6 @@ class Component extends DCLogic {
       if (d.serviceReports) this.state.serviceReports = d.serviceReports;
       if (d.users) this.state.users = d.users;
       if (d.commissionConfig) this.state.commissionConfig = d.commissionConfig;
-      if (d.regions && d.regions.length) this.state.regions = d.regions;
       if (d._nextId) this._nextId = d._nextId;
       if (d._nextQuoteId) this._nextQuoteId = d._nextQuoteId;
       if (d._nextInvoiceId) this._nextInvoiceId = d._nextInvoiceId;
@@ -2187,7 +2125,7 @@ class Component extends DCLogic {
   snapshot() {
     return { _app: 'navtek', _version: 5, _exported: new Date().toISOString(),
       cases: this.state.cases, inventory: this.state.inventory, quotations: this.state.quotations,
-      invoices: this.state.invoices, orders: this.state.orders, customers: this.state.customers, subvendors: this.state.subvendors, serviceReports: this.state.serviceReports, users: this.state.users, regions: this.state.regions, commissionConfig: this.state.commissionConfig,
+      invoices: this.state.invoices, orders: this.state.orders, customers: this.state.customers, subvendors: this.state.subvendors, serviceReports: this.state.serviceReports, users: this.state.users, commissionConfig: this.state.commissionConfig,
       _nextId: this._nextId, _nextQuoteId: this._nextQuoteId, _nextInvoiceId: this._nextInvoiceId,
       _nextOrderId: this._nextOrderId, _nextCustomerId: this._nextCustomerId, _nextSubvendorId: this._nextSubvendorId, _nextUserId: this._nextUserId };
   }
@@ -2238,13 +2176,13 @@ class Component extends DCLogic {
       const d = JSON.parse(text);
       if (!d || d._app !== 'navtek') return;
       const patch = {};
-      ['cases','inventory','quotations','invoices','orders','customers','subvendors','serviceReports','users','commissionConfig','regions'].forEach(k => { if (d[k]) patch[k] = d[k]; });
+      ['cases','inventory','quotations','invoices','orders','customers','subvendors','serviceReports','users','commissionConfig'].forEach(k => { if (d[k]) patch[k] = d[k]; });
       ['_nextId','_nextQuoteId','_nextInvoiceId','_nextOrderId','_nextCustomerId','_nextSubvendorId','_nextUserId'].forEach(k => { if (d[k]) this[k] = d[k]; });
       this.setState(patch);
     } catch (e) {}
   }
   componentDidMount() {
-    try { const cu = localStorage.getItem('navtek_currentUser'); if (cu) { const u = this.state.users.find(x => String(x.id) === cu && x.active); if (u) this.setState({ currentUserId: u.id, view: this.landingView(u) }); } } catch (e) {}
+    try { const cu = localStorage.getItem('navtek_currentUser'); if (cu) { const u = this.state.users.find(x => String(x.id) === cu && x.active); if (u) this.setState({ currentUserId: u.id }); } } catch (e) {}
     this.tryRestoreDataFile();
     this.persist();
     // Bundled/offline build can mount over a frozen snapshot — force a clean re-render.
@@ -2271,7 +2209,7 @@ class Component extends DCLogic {
         const d = JSON.parse(e.target.result);
         if (!d || d._app !== 'navtek') { alert('Not a valid Navtek backup file.'); return; }
         const patch = {};
-        ['cases','inventory','quotations','invoices','orders','customers','subvendors','serviceReports','users','commissionConfig','regions'].forEach(k => { if (d[k]) patch[k] = d[k]; });
+        ['cases','inventory','quotations','invoices','orders','customers','subvendors','serviceReports','users','commissionConfig'].forEach(k => { if (d[k]) patch[k] = d[k]; });
         ['_nextId','_nextQuoteId','_nextInvoiceId','_nextOrderId','_nextCustomerId','_nextSubvendorId','_nextUserId'].forEach(k => { if (d[k]) this[k] = d[k]; });
         this.setState(patch, () => { this.persist(); alert('Backup restored successfully.'); });
       } catch (err) { alert('Restore failed: ' + err.message); }
@@ -2341,7 +2279,7 @@ class Component extends DCLogic {
       timeRows: [ { label: 'Working', date: '', from: '', to: '', hrs: '' }, { label: 'Waiting', date: '', from: '', to: '', hrs: '' }, { label: 'Workshop', date: '', from: '', to: '', hrs: '' }, { label: 'Travel to Vessel', date: '', from: '', to: '', hrs: '' }, { label: 'Travel from Vessel', date: '', from: '', to: '', hrs: '' } ],
       telCalls: '', transport: '', totalHours: '', comments: '', satisfaction: '3' };
   }
-  blankUser() { return { id: null, name: '', email: '', perms: ['enquiry','quote'], active: true, password: '' }; }
+  blankUser() { return { id: null, name: '', email: '', role: 'Coordinator', active: true, password: '' }; }
   // ---- auth ----
   login() {
     const email = (this.state.loginEmail||'').trim().toLowerCase();
@@ -2349,9 +2287,8 @@ class Component extends DCLogic {
     if (!u) { this.setState({ loginError: 'No active user with that email.' }); return; }
     if (u.password && u.password !== this.state.loginPassword) { this.setState({ loginError: 'Incorrect password.' }); return; }
     try { localStorage.setItem('navtek_currentUser', String(u.id)); } catch (e) {}
-    this.setState({ currentUserId: u.id, loginEmail: '', loginPassword: '', loginError: '', view: this.landingView(u), serviceMode: 'list' });
+    this.setState({ currentUserId: u.id, loginEmail: '', loginPassword: '', loginError: '', view: 'enquiries' });
   }
-  landingView(u) { const a = this.navAllowedForUser(u); const order = ['enquiries','service','reports','balance','invoice','orders','quote','coordinators','settings','help']; return order.find(x => a.includes(x)) || 'help'; }
   logout() { try { localStorage.removeItem('navtek_currentUser'); } catch (e) {} this.setState({ currentUserId: null, loginEmail: '', loginPassword: '', loginError: '' }); }
   currentUser() { return this.state.users.find(u => u.id === this.state.currentUserId) || null; }
   navAllowedFor(role) {
@@ -2366,46 +2303,6 @@ class Component extends DCLogic {
     };
     return map[role] || map.Viewer;
   }
-  // ---- permission model (multiple roles per user) ----
-  permCatalog() { return [
-    { key: 'enquiry', label: 'Create enquiries', short: 'Enquiry' },
-    { key: 'quote', label: 'Create quotations', short: 'Quote' },
-    { key: 'order', label: 'Create orders', short: 'Order' },
-    { key: 'invoice', label: 'Create invoices', short: 'Invoice' },
-    { key: 'service', label: 'Service engineer — own assigned reports', short: 'Service' },
-    { key: 'reports_own', label: 'View reports — only their own', short: 'Own reports' },
-    { key: 'reports_all', label: 'View all reports', short: 'All reports' },
-    { key: 'balance', label: 'View balance sheet', short: 'Balance' },
-    { key: 'admin', label: 'Admin — all operations', short: 'Admin' },
-  ]; }
-  legacyRoleToPerms(role) { const m = {
-    Admin: ['admin'],
-    Manager: ['enquiry','quote','order','invoice','reports_all','balance'],
-    Coordinator: ['enquiry','quote','order','reports_own'],
-    Accounts: ['invoice','reports_all','balance'],
-    'Service Report': ['service'], Engineer: ['service'],
-    Viewer: ['reports_all','balance'],
-  }; return m[role] || ['reports_own']; }
-  userPerms(u) { if (!u) return []; if (Array.isArray(u.perms)) return u.perms; return this.legacyRoleToPerms(u.role); }
-  hasPerm(p) { const ps = this.userPerms(this.currentUser()); return ps.includes('admin') || ps.includes(p); }
-  permsSummary(perms) { if (!perms || !perms.length) return '—'; if (perms.includes('admin')) return 'Admin'; const cat = this.permCatalog(); return perms.map(k => { const c = cat.find(x => x.key === k); return c ? c.short : k; }).join(', '); }
-  navAllowedForUser(u) {
-    const p = this.userPerms(u); const has = k => p.includes('admin') || p.includes(k);
-    const out = ['help'];
-    const businessOps = p.includes('admin') || ['enquiry','quote','order','invoice','reports_own','reports_all','balance'].some(k => p.includes(k));
-    if (businessOps) out.push('enquiries');
-    if (has('enquiry')) out.push('newEnquiry');
-    if (has('quote')) out.push('quote');
-    if (has('order')) out.push('orders');
-    if (has('invoice')) out.push('invoice');
-    if (has('service')) out.push('service');
-    if (has('reports_own') || has('reports_all')) out.push('reports');
-    if (has('balance')) out.push('balance');
-    if (has('admin') || has('order')) out.push('coordinators');
-    if (has('admin')) out.push('settings');
-    return out;
-  }
-  toggleUserPerm(key) { this.setState(s => { const cur = s.userForm.perms || []; let perms; if (key === 'admin') { perms = cur.includes('admin') ? [] : ['admin']; } else { perms = cur.includes(key) ? cur.filter(x => x !== key) : [...cur.filter(x => x !== 'admin'), key]; } return { userForm: { ...s.userForm, perms } }; }); }
 
   nextInvoiceNo() {
     const yyyy = new Date().getFullYear();
@@ -2524,9 +2421,6 @@ class Component extends DCLogic {
   effectiveLowestId(c) { const qs = (c.subQuotes||[]); if (!qs.length) return null; const curs = [...new Set(qs.map(q => q.currency))]; if (curs.length !== 1) return null; let best = null, bestVal = Infinity; qs.forEach(q => { const g = this.subQuoteTotals(q).grand; if (g > 0 && g < bestVal) { bestVal = g; best = q.id; } }); return best; }
   selectSubQuote(caseId, quoteId, reason) { this.setState(s => ({ cases: s.cases.map(c => String(c.id) === String(caseId) ? { ...c, selectedSubQuoteId: quoteId, subSelectReason: (reason !== undefined ? reason : (c.subSelectReason||'')) } : c) })); }
   setSubSelectReason(caseId, reason) { this.setState(s => ({ cases: s.cases.map(c => String(c.id) === String(caseId) ? { ...c, subSelectReason: reason } : c) })); }
-  // ---- regions master ----
-  addRegion() { this.setState(s => { const v = (s.regionInput||'').trim().toUpperCase(); if (!v || s.regions.includes(v)) return { regionInput: '' }; return { regions: [...s.regions, v], regionInput: '' }; }, () => this.persist()); }
-  removeRegion(r) { this.setState(s => ({ regions: s.regions.filter(x => x !== r) }), () => this.persist()); }
 
   // ---- doc compute (shared by quote + invoice) ----
   computeDoc(items, currency, discount) {
@@ -2625,23 +2519,16 @@ class Component extends DCLogic {
     if (existing) { this.loadInvoice(existing.id); return; }
     const cust = this.findCustomerByName(o.customer);
     const cgst = String(this.props.defaultCgst ?? 9), sgst = String(this.props.defaultSgst ?? 9), igst = String(this.props.defaultIgst ?? 0);
-    // Prefer the originating quotation's PRE-TAX line items so the invoice matches the quote and GST is applied once
-    // (o.poAmount is the quote's GST-inclusive grand total — using it as a unit price double-taxes).
-    const srcQuote = o.fromQuoteId ? this.state.quotations.find(x => String(x.id) === String(o.fromQuoteId)) : null;
-    let items = [];
-    if (srcQuote && (srcQuote.items||[]).length) {
-      items = srcQuote.items.map(it => ({ ...it }));
-    } else {
-      if (o.poDescription) items.push({ desc: o.poDescription, unitPrice: String(o.poAmount||''), qty: '1', cgst, sgst, igst });
-      (o.expenses||[]).forEach(e => { if (Number(e.amount)) items.push({ desc: `${e.category}${e.description?' — '+e.description:''}`, unitPrice: String(e.amount), qty: '1', cgst, sgst, igst }); });
-    }
+    const items = [];
+    if (o.poDescription) items.push({ desc: o.poDescription, unitPrice: String(o.poAmount||''), qty: '1', cgst, sgst, igst });
+    (o.expenses||[]).forEach(e => { if (Number(e.amount)) items.push({ desc: `${e.category}${e.description?' — '+e.description:''}`, unitPrice: String(e.amount), qty: '1', cgst, sgst, igst }); });
     if (!items.length) items.push(this.blankItem());
     const reg = o.region || 'IND';
     this.setState({ invoice: { ...this.blankInvoice(), docType, region: reg,
       fromOrderId: String(o.id), orderId: String(o.id), quoteRef: o.quoteRef, caseId: o.caseId,
       invoiceNo: this.nextInvDocNo(reg, docType==='PROFORMA'), customer: o.customer, customerId: cust ? String(cust.id) : '',
       vessel: o.vessel, location: o.location, address: cust ? cust.address : '', gstin: cust ? cust.gstin : '',
-      poNo: o.poNumber, items, currency: (srcQuote && srcQuote.currency) || o.poCurrency || 'INR' } });
+      poNo: o.poNumber, items, currency: o.poCurrency || 'INR' } });
   }
   loadInvoice(id) {
     const iv = this.state.invoices.find(x => String(x.id) === String(id));
@@ -2808,12 +2695,10 @@ class Component extends DCLogic {
     const o = this.state.orders.find(x => String(x.id) === String(orderId));
     const sr = this.blankServiceReport();
     if (o) { sr.orderId = String(o.id); sr.orderNo = o.orderNo; sr.region = o.region||'IND'; sr.vessel = o.vessel||''; sr.customer = o.customer||''; sr.port = o.location||''; }
-    const cu = this.currentUser();
-    if (cu && this.userPerms(cu).includes('service') && !this.userPerms(cu).includes('admin')) { sr.engineerId = String(cu.id); sr.engineer = cu.name; }
-    this.setState({ service: sr, view: 'service', serviceMode: 'edit' });
+    this.setState({ service: sr, view: 'service' });
   }
   loadService(id) { const sr = this.state.serviceReports.find(x => String(x.id) === String(id)); this.setState({ service: sr ? JSON.parse(JSON.stringify(sr)) : this.blankServiceReport() }); }
-  newService() { const u = this.currentUser(); const base = this.blankServiceReport(); if (u && this.userPerms(u).includes('service') && !this.userPerms(u).includes('admin')) { base.engineerId = String(u.id); base.engineer = u.name; } this.setState({ service: base }); }
+  newService() { this.setState({ service: this.blankServiceReport() }); }
   setService(field, value) { this.setState(s => ({ service: { ...s.service, [field]: value } })); }
   setServiceJobType(key, value) { this.setState(s => ({ service: { ...s.service, jobType: { ...s.service.jobType, [key]: value } } })); }
   setServiceEngineer(userId) { const u = this.state.users.find(x => String(x.id) === String(userId)); this.setState(s => ({ service: { ...s.service, engineerId: String(userId), engineer: u ? u.name : '' } })); }
@@ -2826,8 +2711,6 @@ class Component extends DCLogic {
     this.setState(s => {
       const sr = JSON.parse(JSON.stringify(s.service));
       if (!sr.srNo) sr.srNo = this.nextDocNo('SR', sr.region);
-      const cu = this.currentUser();
-      if (cu && !sr.engineer && this.userPerms(cu).includes('service') && !this.userPerms(cu).includes('admin')) { sr.engineerId = String(cu.id); sr.engineer = cu.name; }
       let serviceReports = [...s.serviceReports];
       if (sr.id) { serviceReports = serviceReports.map(x => x.id===sr.id ? sr : x); }
       else { sr.id = this._nextServiceId++; serviceReports.push(sr); }
@@ -2847,13 +2730,11 @@ class Component extends DCLogic {
     this.setState(s => ({ order: { ...s.order, vendorPOs: s.order.vendorPOs.map(p => p.id === poId ? { ...p, vendorName: v.name, vendorAddress: v.address||'', vendorGstin: v.gstin||'' } : p) } }));
   }
   setUserForm(field, value) { this.setState(s => ({ userForm: { ...s.userForm, [field]: value } })); }
-  editUser(id) { const u = this.state.users.find(x => x.id === id); if (u) { const perms = Array.isArray(u.perms) ? u.perms : this.legacyRoleToPerms(u.role); this.setState({ userForm: { ...u, perms: [...perms] } }); } }
+  editUser(id) { const u = this.state.users.find(x => x.id === id); if (u) this.setState({ userForm: { ...u } }); }
   saveUser() {
     this.setState(s => {
       const uf = { ...s.userForm };
       if (!uf.name.trim()) return {};
-      uf.perms = Array.isArray(uf.perms) ? uf.perms : [];
-      uf.role = this.permsSummary(uf.perms);
       let users = [...s.users];
       if (uf.id) { users = users.map(x => x.id === uf.id ? uf : x); }
       else { uf.id = this._nextUserId++; users.push(uf); }
@@ -2965,14 +2846,9 @@ class Component extends DCLogic {
     const tag = (s.dateFrom||'all') + '_to_' + (s.dateTo||'all');
     this.downloadExcel(headers, rows, `Navtek_Report_${tag}.xls`);
   }
-  // ---- report scope helpers (reports_own users only see their own coordinated records) ----
-  repScopeOn() { const u = this.currentUser(); return !!u && this.userPerms(u).includes('reports_own') && !this.userPerms(u).includes('reports_all') && !this.userPerms(u).includes('admin'); }
-  repScopeOrders(list) { const u = this.currentUser(); return this.repScopeOn() ? list.filter(o => this.orderCoordinator(o) === u.name) : list; }
-  repScopeCases(list) { const u = this.currentUser(); return this.repScopeOn() ? list.filter(c => (c.coordinator||'') === u.name) : list; }
   exportInvoicesExcel() {
     const s = this.state;
     let list = [...s.invoices];
-    if (this.repScopeOn()) { const ids = new Set(this.repScopeOrders(s.orders).map(o => String(o.id))); list = list.filter(iv => ids.has(String(iv.orderId))); }
     if (s.invFrom) list = list.filter(iv => iv.invoiceDate >= s.invFrom);
     if (s.invTo) list = list.filter(iv => iv.invoiceDate <= s.invTo);
     const headers = ['Invoice No','Date','Customer','Vessel','Ref Quote','Amount','Currency','Payment'];
@@ -2981,7 +2857,7 @@ class Component extends DCLogic {
   }
   exportOrdersExcel() {
     const headers = ['Order ID','Customer PO','Customer','Vessel','Invoices','Invoiced (INR)','Cost (INR)','Profit (INR)','Status'];
-    const rows = this.repScopeOrders(this.state.orders).map(o => { const f = this.orderFinancials(o); return [o.orderNo, o.poNumber, o.customer, o.vessel, o.invoiceIds.length, f.invINR, f.costINR, f.profitINR, o.status]; });
+    const rows = this.state.orders.map(o => { const f = this.orderFinancials(o); return [o.orderNo, o.poNumber, o.customer, o.vessel, o.invoiceIds.length, f.invINR, f.costINR, f.profitINR, o.status]; });
     this.downloadExcel(headers, rows, 'Navtek_Orders.xls');
   }
   exportBalanceExcel() {
@@ -2990,7 +2866,7 @@ class Component extends DCLogic {
     this.downloadExcel(headers, rows, 'Navtek_BalanceSheet.xls');
   }
   exportCaseExcel() {
-    const list = this.repScopeCases([...this.state.cases]).sort((a,b)=>a.srNo-b.srNo);
+    const list = [...this.state.cases].sort((a,b)=>a.srNo-b.srNo);
     const headers = ['Sr','Case ID','Date','Company','Vessel','Location','Job Scope','Quoted Amount','Coordinator','Status','Remarks'];
     const rows = list.map(c => [c.srNo, c.caseId, this.fmtDate(c.date), c.company, c.vessel, c.location, c.jobScope, (c.custAmount?this.fmt(c.custAmount,c.custCurrency):''), c.coordinator, c.status, c.remarks]);
     this.downloadExcel(headers, rows, 'Navtek_Case_Master.xls');
@@ -3020,7 +2896,6 @@ class Component extends DCLogic {
       quote: ['Quotation', 'Stage 2 — build & export a quotation'],
       orders: ['Orders', 'Stage 3 — execute orders, expenses & vendor POs'],
       invoice: ['Invoice', 'Stage 4 — raise invoices against orders'],
-      service: ['Service Reports', 'Field engineering job records'],
       reports: ['Reports', 'Case, order, invoice & financial analytics'],
       balance: ['Balance Sheet', 'Order-wise P&L and invoice ledger'],
       coordinators: ['Coordinators', 'Workload monitoring & commission'],
@@ -3029,11 +2904,11 @@ class Component extends DCLogic {
     };
     const [pageTitle, pageSub] = titles[view] || titles.enquiries;
 
-    const nav = (code, label, target) => ({ code, label, onClick: () => this.setState(target==='service' ? { view: target, serviceMode: 'list' } : { view: target }),
+    const nav = (code, label, target) => ({ code, label, onClick: () => this.setState({ view: target }),
       style: `display:flex; align-items:center; gap:11px; width:100%; text-align:left; border:none; cursor:pointer; padding:11px 14px; border-radius:8px; font-size:13.5px; font-weight:${view===target?'600':'500'}; background:${view===target?'rgba(224,116,47,.18)':'transparent'}; color:${view===target?'#fff':'#cdd9e3'};` });
     const navItemsRaw = [ nav('01','Enquiries','enquiries'), nav('02','New Enquiry','newEnquiry'), nav('03','Quotation','quote'), nav('04','Orders','orders'), nav('05','Invoice','invoice'), nav('06','Service Reports','service'), nav('07','Reports','reports'), nav('08','Balance Sheet','balance'), nav('09','Coordinators','coordinators'), nav('10','Settings','settings'), nav('11','Help','help') ];
     const curUser = this.currentUser();
-    const allowed = curUser ? this.navAllowedForUser(curUser) : [];
+    const allowed = curUser ? this.navAllowedFor(curUser.role) : [];
     const navTargets = { 'Enquiries':'enquiries','New Enquiry':'newEnquiry','Quotation':'quote','Orders':'orders','Invoice':'invoice','Service Reports':'service','Reports':'reports','Balance Sheet':'balance','Coordinators':'coordinators','Settings':'settings','Help':'help' };
     const navItems = navItemsRaw.filter(n => allowed.includes(navTargets[n.label]));
 
@@ -3167,24 +3042,13 @@ class Component extends DCLogic {
     const reportTabs = [ rtab('case','Case-wise'), rtab('date','Date-wise'), rtab('employee','Employee-wise'), rtab('status','Status Summary'), rtab('vendor','Vendor-wise'), rtab('orders','Orders'), rtab('invoices','Invoices'), rtab('subvendor','Sub-vendor PO'), rtab('service','Service Reports') ];
 
     const statusList = ['OPEN','QUOTED','WON','LOST','CLOSED','REGRET'];
-    // ===== REPORTS SCOPE — reports_own users see only records tied to orders/cases they coordinate =====
-    const repOwn = !!curUser && this.userPerms(curUser).includes('reports_own') && !this.userPerms(curUser).includes('reports_all') && !this.userPerms(curUser).includes('admin');
-    const repName = curUser ? curUser.name : '';
-    const repOrders = repOwn ? s.orders.filter(o => this.orderCoordinator(o) === repName) : s.orders;
-    const repOrderIdSet = new Set(repOrders.map(o => String(o.id)));
-    const repCases = repOwn ? all.filter(c => (c.coordinator||'') === repName) : all;
-    const repInvoices = repOwn ? s.invoices.filter(iv => repOrderIdSet.has(String(iv.orderId))) : s.invoices;
-    const repServiceReports = repOwn ? s.serviceReports.filter(x => repOrderIdSet.has(String(x.orderId))) : s.serviceReports;
-    const reportServiceRows = [...repServiceReports].sort((a,b)=>b.id-a.id).map(x => ({ srNo: x.srNo, dateDisp: this.fmtDate(x.date), vessel: x.vessel||'—', equipment: x.equipment||'—', engineer: x.engineer||'—', orderNo: x.orderNo||'—',
-      onOpen: () => { this.loadService(x.id); this.setState({ view: 'service', serviceMode: 'edit' }); },
-      onOpenOrder: (ev) => { ev.stopPropagation(); if (x.orderId) { this.loadOrder(x.orderId); this.setState({ view: 'orders' }); } } }));
-    const statusCards = statusList.map(st => { const active = s.statusFilter === st; return { label: st, count: String(repCases.filter(c=>c.status===st).length),
+    const statusCards = statusList.map(st => { const active = s.statusFilter === st; return { label: st, count: String(all.filter(c=>c.status===st).length),
       onClick: () => this.setState({ statusFilter: active ? '' : st }),
       style: `text-align:left; cursor:pointer; background:#fff; border:1px solid ${active?'#0f2840':'#dde5ec'}; border-top:4px solid ${this.statusColor(st)}; border-radius:11px; padding:18px; box-shadow:${active?'0 4px 14px rgba(15,40,64,.12)':'none'};` }; });
-    const statusRows = s.statusFilter ? repCases.filter(c => c.status === s.statusFilter).map(c => this.decorate(c)) : [];
+    const statusRows = s.statusFilter ? all.filter(c => c.status === s.statusFilter).map(c => this.decorate(c)) : [];
 
     const empMap = {};
-    repCases.forEach(c => {
+    all.forEach(c => {
       const k = c.coordinator || '—';
       if (!empMap[k]) empMap[k] = { name: k, total:0, open:0, won:0, lost:0, inr:0, usd:0 };
       const e = empMap[k]; e.total++;
@@ -3198,7 +3062,7 @@ class Component extends DCLogic {
     const employeeRows = Object.values(empMap).sort((a,b)=>b.total-a.total).map(e => ({ name:e.name, total:String(e.total), open:String(e.open), won:String(e.won), lost:String(e.lost), inr:this.fmt(e.inr,'INR'), usd:this.fmt(e.usd,'USD') }));
 
     const venMap = {};
-    repCases.forEach(c => c.vendors.forEach((v, i) => {
+    all.forEach(c => c.vendors.forEach((v, i) => {
       if (!v.name) return;
       const k = v.name.toUpperCase();
       if (!venMap[k]) venMap[k] = { name: v.name, quotes:0, selected:0, inr:0, usd:0 };
@@ -3208,13 +3072,13 @@ class Component extends DCLogic {
     }));
     const vendorRows = Object.values(venMap).sort((a,b)=>b.quotes-a.quotes).map(v => ({ name:v.name, quotes:String(v.quotes), selected:String(v.selected), inr:this.fmt(v.inr,'INR'), usd:this.fmt(v.usd,'USD') }));
 
-    let dateList = [...repCases];
+    let dateList = [...all];
     if (s.dateFrom) dateList = dateList.filter(c => c.date >= s.dateFrom);
     if (s.dateTo) dateList = dateList.filter(c => c.date <= s.dateTo);
     dateList.sort((a,b)=> a.date < b.date ? 1 : -1);
     const dateRows = dateList.map(c => ({ dateDisp:this.fmtDate(c.date), caseId:c.caseId, company:c.company, vessel:c.vessel||'—', coordinator:c.coordinator||'—', status:c.status, statusStyle:this.statusStyleFor(c.status) }));
     const dateRangeNote = `${dateList.length} case(s)` + (s.dateFrom||s.dateTo ? ' in range' : ' (all dates)');
-    const allCases = [...repCases].sort((a,b)=>a.srNo-b.srNo).map(c => this.decorate(c));
+    const allCases = [...all].sort((a,b)=>a.srNo-b.srNo).map(c => this.decorate(c));
 
     const invGrand = (ivx) => this.computeDoc(ivx.items, ivx.currency, { type: ivx.discountType, value: ivx.discountValue }).grand;
 
@@ -3223,11 +3087,7 @@ class Component extends DCLogic {
     const savedOrderOptions = s.orders.map(o => ({ id: String(o.id), label: `${o.orderNo} · ${o.customer||o.caseId}` }));
     // ===== SERVICE REPORTS =====
     const sr = s.service;
-    const myName = curUser ? curUser.name : '';
-    const serviceRestricted = !!curUser && this.userPerms(curUser).includes('service') && !this.userPerms(curUser).includes('admin');
-    let engUsers = s.users.filter(u => u.active && (this.userPerms(u).includes('service') || this.userPerms(u).includes('admin')));
-    if (serviceRestricted) engUsers = engUsers.filter(u => u.id === curUser.id);
-    const engineerOptions = engUsers.map(u => ({ id: String(u.id), label: `${u.name}${u.email ? ' · ' + u.email : ''}` }));
+    const engineerOptions = s.users.filter(u => u.active && (u.role==='Engineer'||u.role==='Service Report'||u.role==='Admin'||u.role==='Manager')).map(u => ({ id: String(u.id), label: `${u.name} · ${u.role}` }));
     const savedServiceOptions = s.serviceReports.map(x => ({ id: String(x.id), label: `${x.srNo} · ${x.vessel||x.equipment||x.orderNo||'—'}` }));
     const onSr = {};
     ['date','vessel','port','imo','equipment','customer','makeModel','serialNo','faultReported','engineerReport','jobCompleted','followUpRequired','telCalls','transport','totalHours','comments','satisfaction','region'].forEach(k => onSr[k] = e => this.setService(k, e.target.value));
@@ -3237,9 +3097,8 @@ class Component extends DCLogic {
       onQty: ev=>this.updateServiceItem('sparesRemoved',idx,'qty',ev.target.value), onDesc: ev=>this.updateServiceItem('sparesRemoved',idx,'desc',ev.target.value), onPart: ev=>this.updateServiceItem('sparesRemoved',idx,'partNo',ev.target.value), onSerial: ev=>this.updateServiceItem('sparesRemoved',idx,'serialNo',ev.target.value), onRate: ev=>this.updateServiceItem('sparesRemoved',idx,'rate',ev.target.value), onRemove: ()=>this.removeServiceItem('sparesRemoved',idx) }));
     const srTimeRows = sr.timeRows.map((r,idx) => ({ label: r.label, date: r.date, from: r.from, to: r.to, hrs: r.hrs,
       onDate: ev=>this.updateServiceTime(idx,'date',ev.target.value), onFrom: ev=>this.updateServiceTime(idx,'from',ev.target.value), onTo: ev=>this.updateServiceTime(idx,'to',ev.target.value), onHrs: ev=>this.updateServiceTime(idx,'hrs',ev.target.value) }));
-    const serviceReportsVisible = serviceRestricted ? s.serviceReports.filter(x => (x.engineer||'') === myName) : s.serviceReports;
-    const serviceReportRows = [...serviceReportsVisible].sort((a,b)=>b.id-a.id).map(x => ({ srNo: x.srNo, dateDisp: this.fmtDate(x.date), vessel: x.vessel||'—', equipment: x.equipment||'—', engineer: x.engineer||'—', orderNo: x.orderNo||'—', hasOrder: !!x.orderId,
-      onOpen: () => { this.loadService(x.id); this.setState({ view: 'service', serviceMode: 'edit' }); },
+    const serviceReportRows = [...s.serviceReports].sort((a,b)=>b.id-a.id).map(x => ({ srNo: x.srNo, dateDisp: this.fmtDate(x.date), vessel: x.vessel||'—', equipment: x.equipment||'—', engineer: x.engineer||'—', orderNo: x.orderNo||'—', hasOrder: !!x.orderId,
+      onOpen: () => { this.loadService(x.id); this.setState({ view: 'service' }); },
       onOpenOrder: (ev) => { ev.stopPropagation(); if (x.orderId) { this.loadOrder(x.orderId); this.setState({ view: 'orders' }); } } }));
     const orderServiceReports = s.serviceReports.filter(x => String(x.orderId) === String(s.order.id)).map(x => ({ srNo: x.srNo, dateDisp: this.fmtDate(x.date), engineer: x.engineer||'—', equipment: x.equipment||'—', onOpen: () => { this.loadService(x.id); this.setState({ view: 'service' }); } }));
     const o = s.order;
@@ -3335,16 +3194,11 @@ class Component extends DCLogic {
     const cf = s.customerForm;
     const onCust = {};
     ['name','address','gstin','pan','contact','email','mobile'].forEach(k => onCust[k] = e => this.setCustomerForm(k, e.target.value));
-    const userRows = s.users.map(u => ({ id: u.id, name: u.name, email: u.email||'—', role: this.permsSummary(this.userPerms(u)), active: u.active, activeLabel: u.active?'Active':'Disabled', activeStyle: this.statusStyleFor(u.active?'WON':'CLOSED'),
+    const userRows = s.users.map(u => ({ id: u.id, name: u.name, email: u.email||'—', role: u.role, active: u.active, activeLabel: u.active?'Active':'Disabled', activeStyle: this.statusStyleFor(u.active?'WON':'CLOSED'),
       onEdit: () => this.editUser(u.id), onToggle: () => this.toggleUserActive(u.id), onDelete: () => this.deleteUser(u.id) }));
     const uf = s.userForm;
     const onUser = {};
-    ['name','email','password'].forEach(k => onUser[k] = e => this.setUserForm(k, e.target.value));
-    const ufPerms = uf.perms || [];
-    const permCheckboxes = this.permCatalog().map(pc => { const checked = ufPerms.includes(pc.key); const isAdmin = pc.key==='admin';
-      return { key: pc.key, label: pc.label, checked, check: checked ? '✓' : '', onToggle: () => this.toggleUserPerm(pc.key),
-        style: `display:flex; align-items:center; gap:10px; width:100%; text-align:left; cursor:pointer; padding:8px 11px; border-radius:8px; font-size:12.5px; font-weight:${checked?'600':'500'}; border:1px solid ${checked?(isAdmin?'#e0742f':'#1f7a45'):'#dde5ec'}; background:${checked?(isAdmin?'#fdf3ea':'#eef6f0'):'#fff'}; color:#33424f;`,
-        boxStyle: `flex:0 0 auto; width:18px; height:18px; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:12px; color:#fff; border:1px solid ${checked?(isAdmin?'#e0742f':'#1f7a45'):'#c2cdd6'}; background:${checked?(isAdmin?'#e0742f':'#1f7a45'):'#fff'};` }; });
+    ['name','email','role','password'].forEach(k => onUser[k] = e => this.setUserForm(k, e.target.value));
     const roleOptions = [
       { value: 'Admin', label: 'Admin — full access' },
       { value: 'Manager', label: 'Manager — orders, quotes, reports' },
@@ -3390,12 +3244,12 @@ class Component extends DCLogic {
       received: this.fmt(totRcv,'INR') + (totRcvU? ' / '+this.fmt(totRcvU,'USD'):''), pending: this.fmt(totPend,'INR') + (totPendU? ' / '+this.fmt(totPendU,'USD'):'') };
 
     // ===== REPORTS: orders + invoices + sub-vendor POs =====
-    const orderReportRows = repOrders.map(ord => { const f = this.orderFinancials(ord); const cx = ord.status==='CANCELLED'; return { orderNo: ord.orderNo, customer: ord.customer||'—', vessel: ord.vessel||'—', poNumber: ord.poNumber||'—', region: ord.region||'IND', status: ord.status, rowStyle: cx?'border-top:1px solid #eef2f5; cursor:pointer; opacity:.5;':'border-top:1px solid #eef2f5; cursor:pointer;', statusStyle: this.statusStyleFor(cx?'CANCELLED':(ord.status==='COMPLETED'||ord.status==='CLOSED'?'WON':'OPEN')),
+    const orderReportRows = s.orders.map(ord => { const f = this.orderFinancials(ord); const cx = ord.status==='CANCELLED'; return { orderNo: ord.orderNo, customer: ord.customer||'—', vessel: ord.vessel||'—', poNumber: ord.poNumber||'—', region: ord.region||'IND', status: ord.status, rowStyle: cx?'border-top:1px solid #eef2f5; cursor:pointer; opacity:.5;':'border-top:1px solid #eef2f5; cursor:pointer;', statusStyle: this.statusStyleFor(cx?'CANCELLED':(ord.status==='COMPLETED'||ord.status==='CLOSED'?'WON':'OPEN')),
       exp: this.fmt(f.costINR,'INR'), inv: this.fmt(f.billedINR,'INR'), pending: this.fmt(f.pendINR,'INR'), invCount: String(ord.invoiceIds.length),
       onOpen: () => { this.loadOrder(ord.id); this.setState({ view: 'orders' }); } }; });
     const subVendorRows = [];
-    repOrders.forEach(ord => (ord.vendorPOs||[]).forEach(p => { const t = this.poTotal(p); const pp = this.poPaid(p); const paid = p.currency==='USD'?pp.usd:pp.inr; subVendorRows.push({ poNo: p.poNo, orderNo: ord.orderNo, vendor: p.vendorName||'—', gstin: p.vendorGstin||'—', dateDisp: this.fmtDate(p.date), totalDisp: this.fmt(t.grand, p.currency), paidDisp: this.fmt(paid, p.currency), pendDisp: this.fmt(t.grand - paid, p.currency), onOpen: () => { this.loadOrder(ord.id); this.setState({ view: 'orders' }); } }); }));
-    let invList = [...repInvoices];
+    s.orders.forEach(ord => (ord.vendorPOs||[]).forEach(p => { const t = this.poTotal(p); const pp = this.poPaid(p); const paid = p.currency==='USD'?pp.usd:pp.inr; subVendorRows.push({ poNo: p.poNo, orderNo: ord.orderNo, vendor: p.vendorName||'—', gstin: p.vendorGstin||'—', dateDisp: this.fmtDate(p.date), totalDisp: this.fmt(t.grand, p.currency), paidDisp: this.fmt(paid, p.currency), pendDisp: this.fmt(t.grand - paid, p.currency), onOpen: () => { this.loadOrder(ord.id); this.setState({ view: 'orders' }); } }); }));
+    let invList = [...s.invoices];
     if (s.invFrom) invList = invList.filter(iv => iv.invoiceDate >= s.invFrom);
     if (s.invTo) invList = invList.filter(iv => iv.invoiceDate <= s.invTo);
     invList.sort((a,b)=> a.invoiceDate < b.invoiceDate ? 1 : -1);
@@ -3450,13 +3304,13 @@ class Component extends DCLogic {
       companyNameFor: 'For ' + (this.props.companyName ?? 'NAVTEK MARINE SERVICES PRIVATE LIMITED'),
       pageTitle, pageSub, navItems, search: s.search, onSearch: e => this.setState({ search: e.target.value }),
       isLoggedIn: !!curUser, showLogin: !curUser,
-      currentUserName: curUser ? curUser.name : '', currentUserRole: curUser ? this.permsSummary(this.userPerms(curUser)) : '',
+      currentUserName: curUser ? curUser.name : '', currentUserRole: curUser ? curUser.role : '',
       currentUserInitial: curUser && curUser.name ? curUser.name.charAt(0).toUpperCase() : '?',
       loginEmail: s.loginEmail, loginPassword: s.loginPassword, loginError: s.loginError, hasLoginError: !!s.loginError,
       onLoginEmail: e => this.setState({ loginEmail: e.target.value }), onLoginPassword: e => this.setState({ loginPassword: e.target.value }),
       onLogin: () => this.login(), onLogout: () => this.logout(),
       loginUserOptions: s.users.filter(u => u.active).map(u => ({ email: u.email, label: `${u.name} · ${u.role}` })),
-      onNewEnquiry: () => this.setState({ view: 'newEnquiry', form: this.blankForm() }), canNewEnquiry: this.hasPerm('enquiry'),
+      onNewEnquiry: () => this.setState({ view: 'newEnquiry', form: this.blankForm() }),
       isEnquiries: view==='enquiries', isNew: view==='newEnquiry', isQuote: view==='quote', isOrders: view==='orders', isInvoice: view==='invoice', isService: view==='service', isReports: view==='reports', isBalance: view==='balance', isSettings: view==='settings', isHelp: view==='help',
       kpis, filteredCases, resultCount: filteredCases.length, noResults: filteredCases.length===0,
       searchNote: s.search ? `Filtered by “${s.search}”` : 'Click a row for full detail',
@@ -3532,21 +3386,15 @@ class Component extends DCLogic {
       onGenServiceFromOrder: () => { if (o.id) this.serviceFromOrder(o.id); },
       // service reports
       service: { ...sr, id: sr.id==null?'':String(sr.id) }, srJobType: sr.jobType, srSatisfaction: sr.satisfaction,
-      onSr, savedServiceOptions, engineerOptions, onSelectServiceOrder: e => this.serviceFromOrder(e.target.value), onLoadService: e => this.loadService(e.target.value), onNewService: () => { this.newService(); this.setState({ serviceMode: 'edit' }); },
-      serviceMode: s.serviceMode, serviceList: s.serviceMode !== 'edit', serviceEdit: s.serviceMode === 'edit', onServiceBack: () => this.setState({ serviceMode: 'list' }),
+      onSr, savedServiceOptions, engineerOptions, onSelectServiceOrder: e => this.serviceFromOrder(e.target.value), onLoadService: e => this.loadService(e.target.value), onNewService: () => this.newService(),
       serviceFromOrderOptions: savedOrderOptions, onServiceEngineer: e => this.setServiceEngineer(e.target.value),
       onSrJobCall: e => this.setServiceJobType('call', e.target.checked), onSrJobWarranty: e => this.setServiceJobType('warranty', e.target.checked), onSrJobInstall: e => this.setServiceJobType('installation', e.target.checked), onSrJobFollowup: e => this.setServiceJobType('followup', e.target.checked),
       srMaterials, srSpares, srTimeRows, onAddMaterial: () => this.addServiceItem('materials'), onAddSpare: () => this.addServiceItem('sparesRemoved'),
       serviceHeading: sr.id ? 'Edit Service Report — ' + sr.srNo : 'New Service Report', svcNoPreview: sr.srNo || this.nextDocNo('SR', sr.region),
       srSaveLabel: sr.id ? 'Update Service Report' : 'Save Service Report', onSaveService: () => this.saveService(), onGenerateServicePdf: () => this.generateServicePdf(),
       srOrderLabel: sr.orderNo ? 'Linked Order: ' + sr.orderNo : 'Not linked to an order',
-      serviceReportRows, hasServiceReports: serviceReportRows.length>0, serviceCount: serviceReportRows.length, noServiceReports: serviceReportRows.length===0,
+      serviceReportRows, hasServiceReports: serviceReportRows.length>0,
       // settings
-      regionOptions: s.regions, regionRows: s.regions.map(r => ({ name: r, onRemove: () => this.removeRegion(r) })), regionCount: s.regions.length, noRegions: s.regions.length===0,
-      regionInput: s.regionInput, onRegionInput: e => this.setState({ regionInput: e.target.value }),
-      onRegionKey: e => { if (e.key === 'Enter') { e.preventDefault(); this.addRegion(); } }, onAddRegion: () => this.addRegion(),
-      setIsRegions: s.settingsTab==='regions', onSettingsRegions: () => this.setState({ settingsTab:'regions' }),
-      regionTabStyle: `border:1px solid ${s.settingsTab==='regions'?'#0f2840':'#cdd7df'}; background:${s.settingsTab==='regions'?'#0f2840':'#fff'}; color:${s.settingsTab==='regions'?'#fff':'#54646f'}; padding:9px 16px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;`,
       settingsTab: s.settingsTab, setIsCustomers: s.settingsTab==='customers', setIsUsers: s.settingsTab==='users', setIsSubvendors: s.settingsTab==='subvendors',
       onSettingsCustomers: () => this.setState({ settingsTab:'customers' }), onSettingsUsers: () => this.setState({ settingsTab:'users' }), onSettingsSubvendors: () => this.setState({ settingsTab:'subvendors' }),
       subvTabStyle: `border:1px solid ${s.settingsTab==='subvendors'?'#0f2840':'#cdd7df'}; background:${s.settingsTab==='subvendors'?'#0f2840':'#fff'}; color:${s.settingsTab==='subvendors'?'#fff':'#54646f'}; padding:9px 18px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;`,
@@ -3555,7 +3403,7 @@ class Component extends DCLogic {
       custTabStyle: `border:1px solid ${s.settingsTab==='customers'?'#0f2840':'#cdd7df'}; background:${s.settingsTab==='customers'?'#0f2840':'#fff'}; color:${s.settingsTab==='customers'?'#fff':'#54646f'}; padding:9px 18px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;`,
       userTabStyle: `border:1px solid ${s.settingsTab==='users'?'#0f2840':'#cdd7df'}; background:${s.settingsTab==='users'?'#0f2840':'#fff'}; color:${s.settingsTab==='users'?'#fff':'#54646f'}; padding:9px 18px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;`,
       customerRows, onCust, customerForm: cf, custSaveLabel: cf.id ? 'Update Customer' : 'Add Customer', onSaveCustomer: () => this.saveCustomer(), onClearCustomer: () => this.setState({ customerForm: this.blankCustomer() }),
-      userRows, onUser, userForm: uf, roleOptions, permCheckboxes, userSaveLabel: uf.id ? 'Update User' : 'Add User', onSaveUser: () => this.saveUser(), onClearUser: () => this.setState({ userForm: this.blankUser() }),
+      userRows, onUser, userForm: uf, roleOptions, userSaveLabel: uf.id ? 'Update User' : 'Add User', onSaveUser: () => this.saveUser(), onClearUser: () => this.setState({ userForm: this.blankUser() }),
       onBackup: () => this.backupData(), onRestore: e => { const f = e.target.files && e.target.files[0]; if (f) this.restoreData(f); e.target.value = ''; },
       onConnectFile: () => this.connectDataFile(), connectFileLabel: this._fileHandle ? 'Re-connect data file' : 'Connect data file (auto-save)', fileStatus: this._fileHandle ? 'Auto-save active.' : 'Not connected — data saves to browser storage only.',
       onClearAll: () => { if (confirm('Clear ALL data (cases, quotations, orders, invoices, customers, service reports)? This cannot be undone. Download a backup first if needed.')) this.clearAllData(); },
@@ -3566,7 +3414,6 @@ class Component extends DCLogic {
       // reports orders+invoices+subvendor
       orderReportRows, hasOrderReport: orderReportRows.length>0, noOrderReport: orderReportRows.length===0, invReportRows, invReportNote, hasInvReport: invReportRows.length>0,
       subVendorRows, hasSubVendor: subVendorRows.length>0, rIsSubvendor: reportTab==='subvendor', rIsServiceReports: reportTab==='service',
-      reportServiceRows, hasReportServiceReports: reportServiceRows.length>0, noReportServiceReports: reportServiceRows.length===0,
       onExportInvoices: () => this.exportInvoicesExcel(), onExportOrders: () => this.exportOrdersExcel(), onExportBalance: () => this.exportBalanceExcel(),
       invFrom: s.invFrom, invTo: s.invTo, onInvFrom: e => this.setState({ invFrom: e.target.value }), onInvTo: e => this.setState({ invTo: e.target.value }),
       // invoice customer mapping + paid
