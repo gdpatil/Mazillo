@@ -261,6 +261,46 @@
                 </div>
               </div>
 
+              <!-- sub-vendor quotes received -->
+              <div style="border-top:1px solid #eef2f5; padding-top:18px; margin-bottom:18px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+                  <div style="font-size:12px; font-weight:700; color:#5e6f7c; text-transform:uppercase; letter-spacing:.06em;">Sub-vendor Quotes Received</div>
+                  <div style="font-size:12px; color:#9aa8b4;">Saved with the enquiry for comparison &amp; future reference</div>
+                </div>
+                <div style="font-size:12px; color:#8a99a6; margin-bottom:12px; line-height:1.5;">Record each quote received from sub-vendors against this enquiry. The winning vendor is compared &amp; selected later in the Order screen.</div>
+                <sc-if value="{{ noSubvendorsRegistered }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12.5px; color:#9a5b15; background:#fbf3e8; border:1px solid #ecd9bf; border-radius:8px; padding:10px 13px; margin-bottom:12px;">Add your sub-vendors in <strong>Settings → Sub-vendors</strong> first — quotes pick the vendor from that list.</div>
+                </sc-if>
+                <sc-for list="{{ formSubQuotes }}" as="q" hint-placeholder-count="0">
+                  <div style="background:#f7fafc; border:1px solid #e2eaf0; border-radius:10px; padding:14px; margin-bottom:10px;">
+                    <div style="display:grid; grid-template-columns:1fr 110px auto; gap:10px; align-items:center; margin-bottom:10px;">
+                      <select value="{{ q.vendorName }}" onChange="{{ q.onVendor }}" style="padding:9px 11px; border:1px solid #cdd7df; border-radius:7px; font-size:13px; background:#fff;"><option value="">— Select sub-vendor —</option><sc-for list="{{ q.vendorOptions }}" as="sv" hint-placeholder-count="0"><option value="{{ sv }}">{{ sv }}</option></sc-for></select>
+                      <select value="{{ q.currency }}" onChange="{{ q.onCurrency }}" style="padding:9px 8px; border:1px solid #cdd7df; border-radius:7px; font-size:13px; background:#fff;"><option value="INR">INR</option><option value="USD">USD</option></select>
+                      <button onClick="{{ q.onRemove }}" style="background:#fff; border:1px solid #e2c4c4; color:#bd4b48; padding:8px 14px; border-radius:7px; font-size:12px; font-weight:600; cursor:pointer;" style-hover="background:#fdeaea;">Remove</button>
+                    </div>
+                    <div style="display:grid; grid-template-columns:32px 1fr 64px 110px 56px 120px 30px; gap:8px; font-size:10px; color:#7c8c99; text-transform:uppercase; font-weight:600; padding:0 2px 3px;">
+                      <div style="text-align:center;">Sr</div><div>Item</div><div style="text-align:center;">Qty</div><div>Unit Price</div><div style="text-align:center;">GST%</div><div style="text-align:right;">Amount</div><div></div>
+                    </div>
+                    <sc-for list="{{ q.items }}" as="it" hint-placeholder-count="0">
+                      <div style="display:grid; grid-template-columns:32px 1fr 64px 110px 56px 120px 30px; gap:8px; align-items:center; margin-bottom:6px;">
+                        <div style="text-align:center; font-family:'IBM Plex Mono',monospace; font-size:12px; color:#8a99a6;">{{ it.sr }}</div>
+                        <input value="{{ it.item }}" onInput="{{ it.onItem }}" placeholder="Item / service" style="padding:7px 9px; border:1px solid #dde5ec; border-radius:6px; font-size:12.5px;" />
+                        <input value="{{ it.qty }}" onInput="{{ it.onQty }}" placeholder="1" style="padding:7px 6px; border:1px solid #dde5ec; border-radius:6px; font-size:12px; font-family:'IBM Plex Mono',monospace; text-align:center;" />
+                        <input value="{{ it.unitPrice }}" onInput="{{ it.onUnit }}" placeholder="0" style="padding:7px 8px; border:1px solid #dde5ec; border-radius:6px; font-size:12px; font-family:'IBM Plex Mono',monospace;" />
+                        <input value="{{ it.gst }}" onInput="{{ it.onGst }}" placeholder="0" style="padding:7px 5px; border:1px solid #dde5ec; border-radius:6px; font-size:12px; font-family:'IBM Plex Mono',monospace; text-align:center;" />
+                        <div style="text-align:right; font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:12.5px;">{{ it.amountDisp }}</div>
+                        <button onClick="{{ it.onRemove }}" style="background:#fff; border:1px solid #e2c4c4; color:#bd4b48; border-radius:6px; height:30px; cursor:pointer;">×</button>
+                      </div>
+                    </sc-for>
+                    <div style="display:flex; align-items:center; gap:14px; margin-top:8px; flex-wrap:wrap;">
+                      <button onClick="{{ q.onAddItem }}" style="background:none; border:1px dashed #b6c5d0; color:#3a6a8f; padding:6px 12px; border-radius:6px; font-size:11.5px; font-weight:600; cursor:pointer;">＋ Item</button>
+                      <div style="margin-left:auto; font-size:12.5px; color:#5e6f7c;">Base: <strong style="font-family:'IBM Plex Mono',monospace; color:#1b2a38;">{{ q.baseDisp }}</strong> · GST: <strong style="font-family:'IBM Plex Mono',monospace; color:#1b2a38;">{{ q.gstDisp }}</strong> · Total: <strong style="font-family:'IBM Plex Mono',monospace; color:#0f2840;">{{ q.grandDisp }}</strong></div>
+                    </div>
+                  </div>
+                </sc-for>
+                <button onClick="{{ onAddSubQuote }}" style="background:none; border:1px dashed #b6c5d0; color:#3a6a8f; padding:8px 14px; border-radius:7px; font-size:12px; font-weight:600; cursor:pointer;" style-hover="background:#eef4f8;">＋ Add sub-vendor quote</button>
+              </div>
+
               <div style="display:flex; gap:12px; justify-content:flex-end; border-top:1px solid #eef2f5; padding-top:18px;">
                 <button onClick="{{ onCancelForm }}" style="background:#fff; border:1px solid #cdd7df; color:#54646f; padding:11px 22px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#f4f7f9;">Cancel</button>
                 <button onClick="{{ onSaveEnquiry }}" style="background:#1f7a45; border:none; color:#fff; padding:11px 26px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#1a6b3c;">{{ saveLabel }}</button>
@@ -693,6 +733,46 @@
                     </sc-for>
                     <button onClick="{{ onAddExpense }}" style="margin-top:6px; background:none; border:1px dashed #b6c5d0; color:#3a6a8f; padding:8px 14px; border-radius:7px; font-size:12px; font-weight:600; cursor:pointer;" style-hover="background:#eef4f8;">＋ Add expense</button>
                   </div>
+
+                  <!-- sub-vendor quote comparison -->
+                  <sc-if value="{{ hasOrderSubQuotes }}" hint-placeholder-val="{{ false }}">
+                    <div style="background:#fff; border:1px solid #dde5ec; border-left:4px solid #e0742f; border-radius:10px; padding:16px; margin-bottom:18px;">
+                      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:4px; flex-wrap:wrap;">
+                        <div style="font-weight:600; font-size:13px;">Sub-vendor Quote Comparison <span style="color:#9aa8b4; font-weight:400;">· select the vendor to place the PO</span></div>
+                        <sc-if value="{{ orderSubQuoteMixed }}" hint-placeholder-val="{{ false }}"><div style="font-size:11px; color:#9a5b15; background:#fbf3e8; border:1px solid #ecd9bf; border-radius:6px; padding:3px 9px;">Mixed currency — compared within each currency</div></sc-if>
+                      </div>
+                      <div style="font-size:12px; color:#8a99a6; margin-bottom:12px;">Lowest total is pre-selected. Choosing another vendor requires a reason.</div>
+                      <div style="display:grid; grid-template-columns:1fr 70px 1fr 1fr 1.1fr 100px; gap:8px; font-size:10px; color:#7c8c99; text-transform:uppercase; font-weight:600; padding:0 6px 5px;">
+                        <div>Sub-vendor</div><div style="text-align:center;">Items</div><div style="text-align:right;">Base</div><div style="text-align:right;">GST</div><div style="text-align:right;">Total</div><div style="text-align:center;">Select</div>
+                      </div>
+                      <sc-for list="{{ orderSubQuoteRows }}" as="r" hint-placeholder-count="0">
+                        <div style="display:grid; grid-template-columns:1fr 70px 1fr 1fr 1.1fr 100px; gap:8px; align-items:center; border-radius:8px; padding:9px 6px; margin-bottom:6px; {{ r.rowStyle }}">
+                          <div style="font-weight:600; font-size:12.5px;">{{ r.vendorName }} <sc-if value="{{ r.isLowest }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px; color:#1f7a45; background:#e6f3eb; border-radius:5px; padding:2px 7px; margin-left:4px; white-space:nowrap;">{{ r.lowBadge }}</span></sc-if></div>
+                          <div style="text-align:center; font-family:'IBM Plex Mono',monospace; font-size:12px; color:#54646f;">{{ r.itemCount }}</div>
+                          <div style="text-align:right; font-family:'IBM Plex Mono',monospace; font-size:12px; color:#54646f;">{{ r.baseDisp }}</div>
+                          <div style="text-align:right; font-family:'IBM Plex Mono',monospace; font-size:12px; color:#54646f;">{{ r.gstDisp }}</div>
+                          <div style="text-align:right; font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:12.5px; color:#0f2840;">{{ r.grandDisp }}</div>
+                          <div style="text-align:center;"><button onClick="{{ r.onSelect }}" style="{{ r.selectStyle }}">{{ r.selectLabel }}</button></div>
+                        </div>
+                      </sc-for>
+                      <sc-if value="{{ orderSubNeedReason }}" hint-placeholder-val="{{ false }}">
+                        <div style="margin-top:8px; background:#fbf3e8; border:1px solid #ecd9bf; border-radius:8px; padding:11px 13px;">
+                          <label style="font-size:11px; font-weight:700; color:#9a5b15; text-transform:uppercase; letter-spacing:.05em;">Reason for not choosing the lowest quote <span style="color:#c0392b;">*</span></label>
+                          <input value="{{ subSelectReasonVal }}" onInput="{{ onSubSelectReason }}" placeholder="e.g. faster delivery, OEM-authorised, quality, payment terms…" style="margin-top:6px; width:100%; padding:9px 11px; border:1px solid #e3cba6; border-radius:7px; font-size:12.5px;" />
+                        </div>
+                      </sc-if>
+                      <sc-if value="{{ orderHasSelectedVendor }}" hint-placeholder-val="{{ false }}">
+                        <div style="margin-top:10px; font-size:12px; color:#1f7a45;">Selected: <strong>{{ orderSelectedVendorName }}</strong> — “＋ Add vendor PO” pre-fills from this quote.</div>
+                      </sc-if>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ orderQuotesEmptyForCase }}" hint-placeholder-val="{{ false }}">
+                    <div style="background:#f7fafc; border:1px dashed #c8d4de; border-radius:10px; padding:14px 16px; margin-bottom:18px; display:flex; align-items:center; gap:12px;">
+                      <span style="font-size:18px; line-height:1;">🛈</span>
+                      <div style="font-size:12.5px; color:#5e6f7c; line-height:1.55;">No sub-vendor quotes recorded for <strong style="font-family:'IBM Plex Mono',monospace; color:#1c4e75;">{{ orderQuoteCaseId }}</strong> yet. Add the quotes received from sub-vendors on the enquiry (Edit Enquiry → <strong>Sub-vendor Quotes Received</strong>) to compare and select a vendor here.</div>
+                    </div>
+                  </sc-if>
 
                   <!-- vendor POs -->
                   <div style="background:#f7fafc; border:1px solid #e2eaf0; border-radius:10px; padding:16px; margin-bottom:18px;">
@@ -1793,6 +1873,18 @@
             </div>
           </sc-for>
         </sc-if>
+        <sc-if value="{{ hasDetailSubQuotes }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:18px; margin-bottom:8px; font-size:12px; font-weight:700; color:#5e6f7c; text-transform:uppercase; letter-spacing:.06em;">Sub-vendor Quotes</div>
+          <sc-for list="{{ detailSubQuotes }}" as="dq" hint-placeholder-count="0">
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:9px 12px; background:{{ dq.bg }}; border:1px solid {{ dq.border }}; border-radius:8px; margin-bottom:7px; font-size:13px;">
+              <span style="font-weight:600;">{{ dq.tag }}{{ dq.vendorName }} <span style="color:#9aa8b4; font-weight:400;">· {{ dq.itemCount }} item(s)</span></span>
+              <span style="font-family:'IBM Plex Mono',monospace;">{{ dq.grandDisp }}</span>
+            </div>
+          </sc-for>
+          <sc-if value="{{ hasDetailSubReason }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:12px; color:#9a5b15; background:#fbf3e8; border:1px solid #ecd9bf; border-radius:7px; padding:8px 11px; margin-top:2px;">Selection reason: {{ detailSubReason }}</div>
+          </sc-if>
+        </sc-if>
         <div style="display:flex; gap:10px; margin-top:22px;">
           <button onClick="{{ detail.onEdit }}" style="flex:1; background:#0f2840; color:#fff; border:none; padding:11px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#163651;">Edit</button>
           <button onClick="{{ detail.onQuote }}" style="flex:1; background:#e0742f; color:#fff; border:none; padding:11px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#cc6526;">Make Quotation</button>
@@ -2152,7 +2244,7 @@ class Component extends DCLogic {
   blankForm() {
     return {
       region: 'IND', date: this.todayStr(), company: '', vessel: '', location: '', jobScope: '',
-      vendors: [], finalVendor: 0,
+      vendors: [], finalVendor: 0, subQuotes: [],
       custAmount: '', custCurrency: 'INR', dateReceived: '', dateSent: '',
       coordinator: '', status: 'OPEN', remarks: '', editId: null,
     };
@@ -2291,6 +2383,7 @@ class Component extends DCLogic {
       const payload = {
         region: f.region, date: f.date, company: f.company, vessel: f.vessel, location: f.location,
         jobScope: f.jobScope, vendors: f.vendors.map(v => ({ ...v })), finalVendor: f.finalVendor,
+        subQuotes: (f.subQuotes||[]).map(q => ({ ...q, items: (q.items||[]).map(it => ({ ...it })) })),
         custAmount: f.custAmount, custCurrency: f.custCurrency, dateReceived: f.dateReceived, dateSent: f.dateSent,
         coordinator: f.coordinator, status: (f.status||'OPEN').toUpperCase(), remarks: f.remarks,
       };
@@ -2298,7 +2391,7 @@ class Component extends DCLogic {
       else {
         const id = this._nextId++;
         const srNo = cases.reduce((m, c) => Math.max(m, c.srNo), 0) + 1;
-        cases.push({ id, srNo, caseId: this.computeCaseId(f), ...payload });
+        cases.push({ id, srNo, caseId: this.computeCaseId(f), selectedSubQuoteId: null, subSelectReason: '', ...payload });
       }
       return { cases, inventory: inv, form: this.blankForm(), view: 'enquiries' };
     });
@@ -2309,10 +2402,25 @@ class Component extends DCLogic {
     this.setState({ view: 'newEnquiry', detailId: null,
       form: { region: c.region, date: c.date, company: c.company, vessel: c.vessel, location: c.location,
         jobScope: c.jobScope, vendors: c.vendors.map(v => ({ ...v })), finalVendor: c.finalVendor,
+        subQuotes: (c.subQuotes||[]).map(q => ({ ...q, items: (q.items||[]).map(it => ({ ...it })) })),
         custAmount: c.custAmount, custCurrency: c.custCurrency, dateReceived: c.dateReceived, dateSent: c.dateSent,
         coordinator: c.coordinator, status: c.status, remarks: c.remarks, editId: c.id } });
   }
   deleteCase(id) { this.setState(s => ({ cases: s.cases.filter(c => c.id !== id), detailId: null })); }
+  // ---- sub-vendor quotes (captured on the enquiry, compared & selected in the order) ----
+  blankSubQuote() { return { id: 'sq'+Math.random().toString(36).slice(2,8), vendorName: '', currency: this.props.defaultCurrency ?? 'INR', items: [ this.blankSubQuoteItem() ] }; }
+  blankSubQuoteItem() { return { item: '', qty: '1', unitPrice: '', gst: '18' }; }
+  addSubQuote() { this.setState(s => ({ form: { ...s.form, subQuotes: [ ...(s.form.subQuotes||[]), this.blankSubQuote() ] } })); }
+  removeSubQuote(id) { this.setState(s => ({ form: { ...s.form, subQuotes: (s.form.subQuotes||[]).filter(q => q.id !== id) } })); }
+  updateSubQuote(id, field, value) { this.setState(s => ({ form: { ...s.form, subQuotes: (s.form.subQuotes||[]).map(q => q.id === id ? { ...q, [field]: value } : q) } })); }
+  addSubQuoteItem(qid) { this.setState(s => ({ form: { ...s.form, subQuotes: (s.form.subQuotes||[]).map(q => q.id === qid ? { ...q, items: [ ...q.items, this.blankSubQuoteItem() ] } : q) } })); }
+  removeSubQuoteItem(qid, idx) { this.setState(s => ({ form: { ...s.form, subQuotes: (s.form.subQuotes||[]).map(q => { if (q.id !== qid) return q; const items = q.items.filter((_,i) => i !== idx); return { ...q, items: items.length ? items : [ this.blankSubQuoteItem() ] }; }) } })); }
+  updateSubQuoteItem(qid, idx, field, value) { this.setState(s => ({ form: { ...s.form, subQuotes: (s.form.subQuotes||[]).map(q => q.id === qid ? { ...q, items: q.items.map((it,i) => i === idx ? { ...it, [field]: value } : it) } : q) } })); }
+  subQuoteTotals(q) { let base = 0, gst = 0; (q.items||[]).forEach(it => { const amt = (Number(it.qty)||0) * (Number(it.unitPrice)||0); base += amt; gst += amt * (Number(it.gst)||0) / 100; }); return { base, gst, grand: base + gst }; }
+  // lowest grand total across quotes — only when all quotes share ONE currency (no cross-currency auto-pick)
+  effectiveLowestId(c) { const qs = (c.subQuotes||[]); if (!qs.length) return null; const curs = [...new Set(qs.map(q => q.currency))]; if (curs.length !== 1) return null; let best = null, bestVal = Infinity; qs.forEach(q => { const g = this.subQuoteTotals(q).grand; if (g > 0 && g < bestVal) { bestVal = g; best = q.id; } }); return best; }
+  selectSubQuote(caseId, quoteId, reason) { this.setState(s => ({ cases: s.cases.map(c => String(c.id) === String(caseId) ? { ...c, selectedSubQuoteId: quoteId, subSelectReason: (reason !== undefined ? reason : (c.subSelectReason||'')) } : c) })); }
+  setSubSelectReason(caseId, reason) { this.setState(s => ({ cases: s.cases.map(c => String(c.id) === String(caseId) ? { ...c, subSelectReason: reason } : c) })); }
 
   // ---- doc compute (shared by quote + invoice) ----
   computeDoc(items, currency, discount) {
@@ -2487,7 +2595,23 @@ class Component extends DCLogic {
   addExpense() { this.setState(s => ({ order: { ...s.order, expenses: [...s.order.expenses, this.blankExpense()] } })); }
   removeExpense(id) { this.setState(s => ({ order: { ...s.order, expenses: s.order.expenses.filter(e => e.id !== id) } })); }
   updateExpense(id, field, value) { this.setState(s => ({ order: { ...s.order, expenses: s.order.expenses.map(e => e.id === id ? { ...e, [field]: value } : e) } })); }
-  addVendorPO() { this.setState(s => ({ order: { ...s.order, vendorPOs: [...s.order.vendorPOs, { ...this.blankVendorPO(), poNo: this.nextPoNo(s.order.region) }] } })); }
+  addVendorPO() { this.setState(s => {
+    const o = s.order;
+    const c = s.cases.find(x => x.caseId === o.caseId) || null;
+    let po = { ...this.blankVendorPO(), poNo: this.nextPoNo(o.region) };
+    const selId = c ? (c.selectedSubQuoteId || this.effectiveLowestId(c)) : null;
+    const sel = c && (c.subQuotes||[]).find(q => q.id === selId);
+    if (sel) {
+      const sv = s.subvendors.find(x => x.name === sel.vendorName);
+      po.vendorName = sel.vendorName;
+      po.vendorAddress = sv ? (sv.address||'') : '';
+      po.vendorGstin = sv ? (sv.gstin||'') : '';
+      po.currency = sel.currency;
+      const items = (sel.items||[]).map(it => ({ desc: it.item, qty: it.qty, rate: it.unitPrice, gst: it.gst }));
+      po.items = items.length ? items : [ this.blankPOItem() ];
+    }
+    return { order: { ...o, vendorPOs: [...o.vendorPOs, po] } };
+  }); }
   addPayment() { this.setState(s => ({ order: { ...s.order, payments: [...(s.order.payments||[]), this.blankPayment()] } })); }
   removePayment(id) { this.setState(s => ({ order: { ...s.order, payments: s.order.payments.filter(p => p.id !== id) } })); }
   updatePayment(id, field, value) { this.setState(s => ({ order: { ...s.order, payments: s.order.payments.map(p => p.id === id ? { ...p, [field]: value } : p) } })); }
@@ -2813,9 +2937,54 @@ class Component extends DCLogic {
     const orderCoordinatorOptions = coordOptsWith(s.order.coordinator);
     const serviceCustomerOptions = withCurrentStr(customerNames, (s.service||{}).customer);
 
+    // ===== SUB-VENDOR QUOTES (enquiry capture) =====
+    const formSubQuotes = (s.form.subQuotes||[]).map(q => {
+      const t = this.subQuoteTotals(q);
+      return { id: q.id, vendorName: q.vendorName, currency: q.currency, vendorOptions: subvNamesList,
+        baseDisp: this.fmt(t.base, q.currency), gstDisp: this.fmt(t.gst, q.currency), grandDisp: this.fmt(t.grand, q.currency),
+        onVendor: ev => this.updateSubQuote(q.id, 'vendorName', ev.target.value),
+        onCurrency: ev => this.updateSubQuote(q.id, 'currency', ev.target.value),
+        onRemove: () => this.removeSubQuote(q.id), onAddItem: () => this.addSubQuoteItem(q.id),
+        items: (q.items||[]).map((it, idx) => ({ sr: String(idx+1), item: it.item, qty: it.qty, unitPrice: it.unitPrice, gst: it.gst,
+          amountDisp: this.fmt((Number(it.qty)||0)*(Number(it.unitPrice)||0)*(1+(Number(it.gst)||0)/100), q.currency),
+          onItem: ev => this.updateSubQuoteItem(q.id, idx, 'item', ev.target.value),
+          onQty: ev => this.updateSubQuoteItem(q.id, idx, 'qty', ev.target.value),
+          onUnit: ev => this.updateSubQuoteItem(q.id, idx, 'unitPrice', ev.target.value),
+          onGst: ev => this.updateSubQuoteItem(q.id, idx, 'gst', ev.target.value),
+          onRemove: () => this.removeSubQuoteItem(q.id, idx) })) };
+    });
+
+    // ===== SUB-VENDOR QUOTE COMPARISON (order selection) =====
+    const orderCase = s.cases.find(c => c.caseId === s.order.caseId) || null;
+    const oqs = orderCase ? (orderCase.subQuotes||[]) : [];
+    const oCurs = [...new Set(oqs.map(q => q.currency))];
+    const orderSubQuoteMixed = oCurs.length > 1;
+    const lowestByCur = {};
+    oqs.forEach(q => { const g = this.subQuoteTotals(q).grand; if (g > 0 && (lowestByCur[q.currency] === undefined || g < lowestByCur[q.currency].val)) lowestByCur[q.currency] = { id: q.id, val: g }; });
+    const effSelId = orderCase ? (orderCase.selectedSubQuoteId || (orderSubQuoteMixed ? null : this.effectiveLowestId(orderCase))) : null;
+    const selQuoteObj = oqs.find(q => q.id === effSelId) || null;
+    const selIsLowestInCur = selQuoteObj ? !!(lowestByCur[selQuoteObj.currency] && lowestByCur[selQuoteObj.currency].id === selQuoteObj.id) : true;
+    const orderSubNeedReason = !!selQuoteObj && !selIsLowestInCur;
+    const orderSubQuoteRows = oqs.map(q => {
+      const t = this.subQuoteTotals(q);
+      const isLow = !!(lowestByCur[q.currency] && lowestByCur[q.currency].id === q.id);
+      const isSel = q.id === effSelId;
+      return { id: q.id, vendorName: q.vendorName || '—', currency: q.currency, itemCount: String((q.items||[]).length),
+        baseDisp: this.fmt(t.base, q.currency), gstDisp: this.fmt(t.gst, q.currency), grandDisp: this.fmt(t.grand, q.currency),
+        isLowest: isLow, lowBadge: isLow ? ('Lowest' + (orderSubQuoteMixed ? ' · ' + q.currency : '')) : '',
+        isSelected: isSel,
+        rowStyle: isSel ? 'background:#eef6f0; border:1px solid #bcdcc7;' : 'background:#fff; border:1px solid #e2eaf0;',
+        selectLabel: isSel ? '✓ Selected' : 'Select',
+        selectStyle: isSel ? 'background:#1f7a45; border:none; color:#fff; padding:7px 13px; border-radius:7px; font-size:11.5px; font-weight:600; cursor:pointer; white-space:nowrap;' : 'background:#fff; border:1px solid #cdd7df; color:#3a6a8f; padding:7px 13px; border-radius:7px; font-size:11.5px; font-weight:600; cursor:pointer; white-space:nowrap;',
+        onSelect: () => { if (orderCase) this.selectSubQuote(orderCase.id, q.id, isLow ? '' : (orderCase.subSelectReason||'')); } };
+    });
+    const orderSelectedVendorName = selQuoteObj ? (selQuoteObj.vendorName || '—') : '';
+    const subSelectReasonVal = orderCase ? (orderCase.subSelectReason || '') : '';
+    const onSubSelectReason = ev => { if (orderCase) this.setSubSelectReason(orderCase.id, ev.target.value); };
+
     // detail
     const dc = s.detailId ? s.cases.find(c => c.id === s.detailId) : null;
-    let detail = {}, detailFields = [], detailVendors = [];
+    let detail = {}, detailFields = [], detailVendors = [], detailSubQuotes = [], detailSubReason = '';
     if (dc) {
       detail = { ...this.decorate(dc), onEdit: () => this.editCase(dc.id), onDelete: () => this.deleteCase(dc.id),
         canClose: dc.status !== 'CLOSED' && dc.status !== 'CANCELLED',
@@ -2832,6 +3001,12 @@ class Component extends DCLogic {
       ];
       detailVendors = dc.vendors.map((v, i) => ({ name: v.name || '—', amount: this.fmt(v.amount, v.currency),
         tag: i === dc.finalVendor ? '◉ ' : '', bg: i === dc.finalVendor ? '#fff4e8' : '#f7fafc', border: i === dc.finalVendor ? '#f0c79e' : '#e2eaf0' }));
+      const dLow = {}; (dc.subQuotes||[]).forEach(q => { const g = this.subQuoteTotals(q).grand; if (g > 0 && (dLow[q.currency] === undefined || g < dLow[q.currency])) dLow[q.currency] = g; });
+      const dSel = dc.selectedSubQuoteId || this.effectiveLowestId(dc);
+      detailSubQuotes = (dc.subQuotes||[]).map(q => { const t = this.subQuoteTotals(q); const isSel = q.id === dSel;
+        return { vendorName: q.vendorName || '—', grandDisp: this.fmt(t.grand, q.currency), itemCount: String((q.items||[]).length),
+          tag: isSel ? '◉ ' : '', bg: isSel ? '#eef6f0' : '#f7fafc', border: isSel ? '#bcdcc7' : '#e2eaf0' }; });
+      detailSubReason = dc.subSelectReason || '';
     }
 
     // quotation
@@ -3145,9 +3320,11 @@ class Component extends DCLogic {
       caseIdPreview: this.computeCaseId(s.form), formHeading: s.form.editId ? 'Edit Enquiry — ' + this.computeCaseId(s.form) : 'New Enquiry',
       saveLabel: s.form.editId ? 'Update Enquiry' : 'Save Enquiry',
       onSaveEnquiry: () => this.saveEnquiry(), onCancelForm: () => this.setState({ view:'enquiries', form: this.blankForm() }),
+      formSubQuotes, onAddSubQuote: () => this.addSubQuote(), noSubvendorsRegistered: subvNamesList.length === 0,
       inv: s.inventory,
       // detail
       showDetail: !!dc, detail, detailFields, detailVendors, hasDetailVendors: detailVendors.length>0, onCloseDetail: () => this.setState({ detailId: null }),
+      detailSubQuotes, hasDetailSubQuotes: detailSubQuotes.length>0, detailSubReason, hasDetailSubReason: !!detailSubReason,
       // quotation
       quoteHeading: s.quote.id ? 'Edit Quotation — ' + s.quote.quoteNo : 'New Quotation',
       quote: { ...s.quote, id: s.quote.id==null ? '' : String(s.quote.id) }, caseOptions, savedQuoteOptions,
@@ -3193,6 +3370,9 @@ class Component extends DCLogic {
       orderSaveLabel: o.id ? 'Update Order' : 'Create Order', onSaveOrder: () => this.saveOrder(),
       expCats, orderExpenses, onAddExpense: () => this.addExpense(), orderPOs, onAddVendorPO: () => this.addVendorPO(),
       orderInvoices, hasOrderInvoices: orderInvoices.length>0, orderFin,
+      orderSubQuoteRows, hasOrderSubQuotes: orderSubQuoteRows.length>0, orderSubQuoteMixed, orderSubNeedReason,
+      orderQuotesEmptyForCase: !!orderCase && oqs.length === 0, orderQuoteCaseId: orderCase ? orderCase.caseId : '',
+      orderSelectedVendorName, orderHasSelectedVendor: !!orderSelectedVendorName, subSelectReasonVal, onSubSelectReason,
       showOrderCommission, orderCommissionDisp,
       orderPayments, onAddPayment: () => this.addPayment(), hasOrderPayments: orderPayments.length>0,
       onCloseOrder: () => this.closeOrder(), orderFullyPaid,

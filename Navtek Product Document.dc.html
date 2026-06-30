@@ -205,7 +205,7 @@
       <div>• Auto Case ID + region (IND / SG)</div><div>• Registered customer company &amp; vessel</div>
       <div>• Job location / port &amp; job scope</div><div>• Amount quoted to customer (INR / USD)</div>
       <div>• Quote received / sent dates</div><div>• Owning coordinator / employee</div>
-      <div>• Vendor reference quotes</div><div>• Status &amp; remarks</div>
+      <div>• Sub-vendor quotes received (see below)</div><div>• Status &amp; remarks</div>
     </div>
     <div style="margin-top:14px; display:flex; flex-wrap:wrap; gap:7px;">
       <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; background:#eef2f5; color:#54646f; padding:4px 9px; border-radius:5px;">OPEN</span>
@@ -239,10 +239,12 @@
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:7px 22px; font-size:12.5px; color:#445463;">
       <div>• Auto order number (ORD)</div><div>• Customer PO reference</div>
       <div>• Costs &amp; expenses</div><div>• Sub-vendor purchase orders (PO)</div>
-      <div>• Customer payments received</div><div>• Generate tax invoice / proforma</div>
-      <div>• Coordinator commission (computed)</div><div>• Close or cancel the order</div>
+      <div>• Sub-vendor quote comparison &amp; selection</div><div>• Customer payments received</div>
+      <div>• Generate tax invoice / proforma</div><div>• Coordinator commission (computed)</div>
+      <div>• Close or cancel the order</div><div></div>
     </div>
-    <div style="margin-top:14px; background:#f3f7fa; border-radius:8px; padding:11px 14px; font-size:12px; color:#445463; line-height:1.6;">One tax invoice and one proforma are permitted per order — re-opening either returns to the existing document rather than duplicating it.</div>
+    <div style="margin-top:14px; background:#f3f7fa; border-radius:8px; padding:11px 14px; font-size:12px; color:#445463; line-height:1.6;"><strong>Sub-vendor quote comparison.</strong> Quotes received against the enquiry (per item: qty, unit price, GST) are compared here. The lowest total is auto-selected; quotes are compared within each currency and never auto-picked across currencies. Choosing a vendor other than the lowest requires a recorded reason. The selected vendor pre-fills the Sub-vendor PO.</div>
+    <div style="margin-top:10px; background:#f3f7fa; border-radius:8px; padding:11px 14px; font-size:12px; color:#445463; line-height:1.6;">One tax invoice and one proforma are permitted per order — re-opening either returns to the existing document rather than duplicating it.</div>
   </div>
 </div>
 
