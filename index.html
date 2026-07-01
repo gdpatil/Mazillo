@@ -939,6 +939,7 @@
                     <sc-if value="{{ orderCanInvoice }}" hint-placeholder-val="{{ false }}"><button onClick="{{ onGenProformaFromOrder }}" style="background:#fff; border:1px solid #b5701a; color:#b5701a; padding:11px 18px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#fff4e0;">{{ orderProformaLabel }}</button></sc-if>
                     <sc-if value="{{ orderFullyPaid }}" hint-placeholder-val="{{ false }}"><button onClick="{{ onCloseOrder }}" style="background:#fff; border:1px solid #1f7a45; color:#1f7a45; padding:11px 18px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#eef7f1;">✓ Mark CLOSED</button></sc-if>
                     <button onClick="{{ onCancelOrder }}" style="background:#fff; border:1px solid #e2c4c4; color:#bd4b48; padding:11px 18px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#fdeaea;">Cancel Order</button>
+                    <sc-if value="{{ orderCanPrint }}" hint-placeholder-val="{{ false }}"><button onClick="{{ onPrintOrder }}" style="background:#0f2840; border:none; color:#fff; padding:11px 18px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#163651;">Generate PDF</button></sc-if>
                     <button onClick="{{ onSaveOrder }}" style="margin-left:auto; background:#1f7a45; border:none; color:#fff; padding:11px 26px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#1a6b3c;">{{ orderSaveLabel }}</button>
                   </div>
                 </div>
@@ -954,6 +955,12 @@
       <!-- ============ BALANCE SHEET ============ -->
       <sc-if value="{{ isBalance }}" hint-placeholder-val="{{ false }}">
         <div>
+          <div style="display:flex; align-items:center; justify-content:flex-end; gap:9px; margin-bottom:14px;">
+            <span style="font-size:12px; color:#7c8c99; font-weight:600;">Display in</span>
+            <div style="display:inline-flex; gap:4px; background:#eef2f5; padding:4px; border-radius:9px;">
+              <sc-for list="{{ ccyToggle }}" as="ct" hint-placeholder-count="3"><button onClick="{{ ct.onClick }}" style="{{ ct.style }}">{{ ct.label }}</button></sc-for>
+            </div>
+          </div>
           <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:22px;">
             <sc-for list="{{ balCards }}" as="b" hint-placeholder-count="0">
               <div style="background:#fff; border:1px solid #dde5ec; border-radius:11px; padding:16px 18px; border-left:4px solid {{ b.color }};">
@@ -996,7 +1003,7 @@
             </div>
             <div style="overflow-x:auto;">
               <div style="min-width:760px; font-size:12.5px;">
-                <div style="display:grid; grid-template-columns:120px 1.4fr 90px 1fr 1fr 1fr 1fr 1fr; background:#f3f7fa; color:#5e6f7c;">
+                <div style="display:grid; grid-template-columns:120px 160px 90px 120px 120px 120px 120px 120px; background:#f3f7fa; color:#5e6f7c;">
                   <div style="padding:11px 16px; font-weight:600;">Order ID</div>
                   <div style="padding:11px 16px; font-weight:600;">Customer</div>
                   <div style="padding:11px 16px; font-weight:600; text-align:center;">Region</div>
@@ -1007,7 +1014,7 @@
                   <div style="padding:11px 16px; font-weight:600; text-align:right;">Profit</div>
                 </div>
                 <sc-for list="{{ balRows }}" as="b" hint-placeholder-count="0">
-                  <div style="display:grid; grid-template-columns:120px 1.4fr 90px 1fr 1fr 1fr 1fr 1fr; align-items:center; {{ b.rowStyle }}">
+                  <div style="display:grid; grid-template-columns:120px 160px 90px 120px 120px 120px 120px 120px; align-items:center; {{ b.rowStyle }}">
                     <div style="padding:11px 16px; font-family:'IBM Plex Mono',monospace; font-weight:600; color:#1c4e75;">{{ b.orderNo }}</div>
                     <div style="padding:11px 16px; font-weight:600;">{{ b.customer }}</div>
                     <div style="padding:11px 16px; text-align:center; color:#54646f;">{{ b.region }}</div>
@@ -1018,7 +1025,7 @@
                     <div style="padding:11px 16px; text-align:right; font-family:'IBM Plex Mono',monospace; font-weight:700; color:{{ b.profitColor }};">{{ b.profit }}</div>
                   </div>
                 </sc-for>
-                <div style="display:grid; grid-template-columns:120px 1.4fr 90px 1fr 1fr 1fr 1fr 1fr; align-items:center; border-top:2px solid #d4dee6; background:#f7fafc;">
+                <div style="display:grid; grid-template-columns:120px 160px 90px 120px 120px 120px 120px 120px; align-items:center; border-top:2px solid #d4dee6; background:#f7fafc;">
                   <div style="padding:12px 16px; font-weight:700; grid-column:1 / span 3;">TOTAL</div>
                   <div style="padding:12px 16px; text-align:right; font-family:'IBM Plex Mono',monospace; font-weight:700; color:#1f7a45;">{{ balTotals.inv }}</div>
                   <div style="padding:12px 16px; text-align:right; font-family:'IBM Plex Mono',monospace; font-weight:700; color:#b3322f;">{{ balTotals.cost }}</div>
@@ -1040,7 +1047,7 @@
                 <div style="padding:11px 16px; font-weight:600; text-align:right;">Received</div>
                 <div style="padding:11px 16px; font-weight:600; text-align:right;">Pending</div>
               </div>
-              <sc-for list="{{ regionRows }}" as="r" hint-placeholder-count="0">
+              <sc-for list="{{ balRegionRows }}" as="r" hint-placeholder-count="0">
                 <div style="display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; align-items:center; border-top:1px solid #eef2f5;">
                   <div style="padding:11px 16px; font-weight:700; color:#1c4e75;">{{ r.region }}</div>
                   <div style="padding:11px 16px; text-align:right; font-family:'IBM Plex Mono',monospace;">{{ r.billed }}</div>
@@ -1049,7 +1056,7 @@
                 </div>
               </sc-for>
             </div>
-            <sc-if value="{{ hasRegionRows }}" hint-placeholder-val="{{ false }}"><div style="height:1px;"></div></sc-if>
+            <sc-if value="{{ hasBalRegionRows }}" hint-placeholder-val="{{ false }}"><div style="height:1px;"></div></sc-if>
           </div>
         </div>
       </sc-if>
@@ -1080,7 +1087,7 @@
             <div style="background:#fff; border:1px solid #dde5ec; border-radius:12px; overflow:hidden; margin-bottom:20px;">
               <div style="padding:14px 18px; border-bottom:1px solid #e6ecf1; font-weight:600; font-size:14px;">Coordinator Performance <span style="color:#9aa8b4; font-weight:400;">· orders handled, current status &amp; commission earned</span></div>
               <div style="overflow-x:auto;">
-                <div style="min-width:720px; font-size:12.5px;">
+                <div style="min-width:970px; font-size:12.5px;">
                   <div style="display:grid; grid-template-columns:1.4fr 100px 100px 100px 90px 1fr 1fr; background:#f3f7fa; color:#5e6f7c;">
                     <div style="padding:11px 16px; font-weight:600;">Coordinator</div>
                     <div style="padding:11px 16px; font-weight:600; text-align:center;">Converted</div>
@@ -1316,6 +1323,14 @@
                 <button onClick="{{ onClearAll }}" style="background:#fff; border:1px solid #e2c4c4; color:#bd4b48; padding:10px 20px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#fdeaea;">Clear All Data</button>
                 <span style="font-size:12px; color:#92a1ad;">{{ backupNote }}</span>
               </div>
+              <div style="height:1px; background:#eef2f5; margin:18px 0;"></div>
+              <div style="font-weight:600; font-size:14px; margin-bottom:6px;">Import from Excel</div>
+              <div style="font-size:12.5px; color:#6c7c8a; margin-bottom:14px; max-width:620px;">Bulk-load master data and open enquiries from a spreadsheet. Download the template, fill the sheets (Regions, Customers, SubVendors, Users, Enquiries), then upload — rows are de-duplicated on GSTIN / name / email so re-uploading a corrected sheet updates rather than duplicates.</div>
+              <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                <button onClick="{{ onExcelTemplate }}" style="background:#fff; border:1px solid #1f5e8c; color:#1f5e8c; padding:10px 20px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#eef5fb;">⬇ Download Excel Template</button>
+                <label style="background:#0f2840; border:none; color:#fff; padding:10px 20px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:7px;" style-hover="background:#163651;">⭱ Upload &amp; Import<input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange="{{ onExcelImport }}" style="display:none;" /></label>
+                <span style="font-size:12px; color:#92a1ad;">{{ excelNote }}</span>
+              </div>
             </div>
           </sc-if>
 
@@ -1329,6 +1344,11 @@
                 <div style="display:flex; gap:8px; margin-top:6px;">
                   <input value="{{ regionInput }}" onInput="{{ onRegionInput }}" onKeyDown="{{ onRegionKey }}" placeholder="e.g. IND, SG, UAE" style="flex:1; min-width:0; padding:10px 12px; border:1px solid #cdd7df; border-radius:8px; font-size:13px; text-transform:uppercase;" />
                   <button onClick="{{ onAddRegion }}" style="flex:0 0 auto; background:#1f7a45; border:none; color:#fff; padding:10px 16px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#1a6b3c;">Add</button>
+                </div>
+                <div style="margin-top:16px; padding-top:14px; border-top:1px solid #eef2f5;">
+                  <label style="font-size:11px; font-weight:600; color:#6c7c8a; text-transform:uppercase; letter-spacing:.06em;">USD Rate <span style="color:#9aa8b4;">· ₹ per 1 USD</span></label>
+                  <input value="{{ usdRate }}" onInput="{{ onUsdRate }}" placeholder="83" style="margin-top:6px; width:100%; padding:10px 12px; border:1px solid #cdd7df; border-radius:8px; font-size:13px; font-family:'IBM Plex Mono',monospace;" />
+                  <div style="font-size:12px; color:#8a99a6; margin-top:8px; line-height:1.55;">Converts INR &harr; USD in Reports &amp; Balance Sheet when you switch display currency. Each order/invoice keeps its own currency.</div>
                 </div>
               </div>
               <div style="background:#fff; border:1px solid #dde5ec; border-radius:12px; overflow:hidden;">
@@ -1558,6 +1578,12 @@
       <!-- ============ REPORTS ============ -->
       <sc-if value="{{ isReports }}" hint-placeholder-val="{{ false }}">
         <div>
+          <div style="display:flex; align-items:center; justify-content:flex-end; gap:9px; margin-bottom:12px;">
+            <span style="font-size:12px; color:#7c8c99; font-weight:600;">Display in</span>
+            <div style="display:inline-flex; gap:4px; background:#eef2f5; padding:4px; border-radius:9px;">
+              <sc-for list="{{ ccyToggle }}" as="ct" hint-placeholder-count="3"><button onClick="{{ ct.onClick }}" style="{{ ct.style }}">{{ ct.label }}</button></sc-for>
+            </div>
+          </div>
           <div style="display:flex; gap:6px; margin-bottom:20px; flex-wrap:wrap;">
             <sc-for list="{{ reportTabs }}" as="rt" hint-placeholder-count="0">
               <button onClick="{{ rt.onClick }}" style="{{ rt.style }}">{{ rt.label }}</button>
@@ -1705,8 +1731,8 @@
             <div style="background:#fff; border:1px solid #dde5ec; border-radius:12px; overflow:hidden;">
               <div style="padding:14px 18px; border-bottom:1px solid #e6ecf1; font-weight:600; font-size:14px;">All Orders <span style="color:#9aa8b4; font-weight:400;">· click to open · spend vs invoiced</span></div>
               <div style="overflow-x:auto;">
-                <div style="min-width:900px; font-size:12.5px;">
-                  <div style="display:grid; grid-template-columns:120px 120px 1.3fr 1fr 80px 80px 110px 110px 110px 110px 70px; background:#f3f7fa; color:#5e6f7c;">
+                <div style="min-width:1160px; font-size:12.5px;">
+                  <div style="display:grid; grid-template-columns:120px 120px 180px 140px 80px 80px 110px 110px 110px 110px 70px; background:#f3f7fa; color:#5e6f7c;">
                     <div style="padding:11px 14px; font-weight:600;">Order ID</div>
                     <div style="padding:11px 14px; font-weight:600;">Customer PO</div>
                     <div style="padding:11px 14px; font-weight:600;">Customer</div>
@@ -1720,7 +1746,7 @@
                     <div style="padding:11px 14px; font-weight:600;"></div>
                   </div>
                   <sc-for list="{{ orderReportRows }}" as="o" hint-placeholder-count="0">
-                    <div onClick="{{ o.onOpen }}" style="display:grid; grid-template-columns:120px 120px 1.3fr 1fr 80px 80px 110px 110px 110px 110px 70px; align-items:center; {{ o.rowStyle }}" style-hover="background:#f6fafc;">
+                    <div onClick="{{ o.onOpen }}" style="display:grid; grid-template-columns:120px 120px 180px 140px 80px 80px 110px 110px 110px 110px 70px; align-items:center; {{ o.rowStyle }}" style-hover="background:#f6fafc;">
                       <div style="padding:10px 14px; font-family:'IBM Plex Mono',monospace; font-weight:600; color:#1c4e75;">{{ o.orderNo }}</div>
                       <div style="padding:10px 14px; color:#54646f;">{{ o.poNumber }}</div>
                       <div style="padding:10px 14px; font-weight:600;">{{ o.customer }}</div>
@@ -1980,10 +2006,10 @@
           <sc-if value="{{ notServicePrint }}" hint-placeholder-val="{{ true }}">
           <div style="display:flex; justify-content:space-between; margin-bottom:22px; font-size:12px;">
             <div style="line-height:1.85;">
-              <div style="color:#8a99a6; font-weight:600; font-size:10px; text-transform:uppercase; letter-spacing:.06em;">Bill To</div>
+              <div style="color:#8a99a6; font-weight:600; font-size:10px; text-transform:uppercase; letter-spacing:.06em;">{{ printBill.heading }}</div>
               <div style="font-weight:700; font-size:14px;">{{ printBill.company }}</div>
-              <div>Vessel: {{ printBill.vessel }}</div>
-              <div>Location: {{ printBill.location }}</div>
+              <div>{{ printBill.line1Label }}: {{ printBill.vessel }}</div>
+              <div>{{ printBill.line2Label }}: {{ printBill.location }}</div>
               <sc-if value="{{ printBill.hasAddress }}" hint-placeholder-val="{{ false }}"><div style="max-width:240px; color:#54646f;">{{ printBill.address }}</div></sc-if>
             </div>
             <div style="text-align:right; line-height:1.85;">
@@ -2081,6 +2107,50 @@
               <div style="text-align:center;"><div style="height:36px;"></div><div style="border-top:1px solid #1b2a38; padding-top:6px; min-width:200px;">Master's Signature &amp; Stamp</div></div>
             </div>
           </sc-if>
+
+          <sc-if value="{{ isOrderPrint }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px 26px; font-size:11.5px; margin-bottom:16px;">
+              <div><span style="color:#8a99a6;">Order No:</span> <strong style="font-family:'IBM Plex Mono',monospace;">{{ opr.orderNo }}</strong></div>
+              <div><span style="color:#8a99a6;">Date:</span> <strong>{{ opr.dateDisp }}</strong></div>
+              <div><span style="color:#8a99a6;">Customer:</span> <strong>{{ opr.customer }}</strong></div>
+              <div><span style="color:#8a99a6;">Customer PO:</span> <strong style="font-family:'IBM Plex Mono',monospace;">{{ opr.poNumber }}</strong></div>
+              <div><span style="color:#8a99a6;">Vessel:</span> <strong>{{ opr.vessel }}</strong></div>
+              <div><span style="color:#8a99a6;">Location:</span> <strong>{{ opr.location }}</strong></div>
+              <div><span style="color:#8a99a6;">Quote Ref:</span> <strong style="font-family:'IBM Plex Mono',monospace;">{{ opr.quoteRef }}</strong></div>
+              <div><span style="color:#8a99a6;">Status:</span> <strong>{{ opr.status }}</strong></div>
+            </div>
+
+            <div style="font-weight:700; font-size:12px; color:#0f2840; margin:14px 0 6px; letter-spacing:.04em;">SUB-VENDOR PURCHASE ORDERS</div>
+            <table style="width:100%; border-collapse:collapse; font-size:11px; margin-bottom:16px;">
+              <thead><tr style="background:#f0f4f7;"><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;">PO No</th><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;">Vendor</th><th style="text-align:right; padding:7px 9px; border:1px solid #dbe3ea;">Amount</th></tr></thead>
+              <tbody>
+                <sc-for list="{{ opr.pos }}" as="p" hint-placeholder-count="0"><tr><td style="padding:7px 9px; border:1px solid #dbe3ea; font-family:'IBM Plex Mono',monospace;">{{ p.poNo }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea;">{{ p.vendor }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea; text-align:right; font-family:'IBM Plex Mono',monospace;">{{ p.amount }}</td></tr></sc-for>
+                <sc-if value="{{ opr.noPos }}" hint-placeholder-val="{{ false }}"><tr><td colspan="3" style="padding:8px 9px; border:1px solid #dbe3ea; color:#8a99a6;">No sub-vendor POs.</td></tr></sc-if>
+              </tbody>
+            </table>
+
+            <div style="font-weight:700; font-size:12px; color:#0f2840; margin:14px 0 6px; letter-spacing:.04em;">INVOICES</div>
+            <table style="width:100%; border-collapse:collapse; font-size:11px; margin-bottom:16px;">
+              <thead><tr style="background:#f0f4f7;"><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;">Invoice No</th><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;">Date</th><th style="text-align:right; padding:7px 9px; border:1px solid #dbe3ea;">Amount</th><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;">Status</th></tr></thead>
+              <tbody>
+                <sc-for list="{{ opr.invs }}" as="iv" hint-placeholder-count="0"><tr><td style="padding:7px 9px; border:1px solid #dbe3ea; font-family:'IBM Plex Mono',monospace;">{{ iv.invoiceNo }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea;">{{ iv.dateDisp }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea; text-align:right; font-family:'IBM Plex Mono',monospace;">{{ iv.amountDisp }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea;">{{ iv.payStatus }}</td></tr></sc-for>
+                <sc-if value="{{ opr.noInvs }}" hint-placeholder-val="{{ false }}"><tr><td colspan="4" style="padding:8px 9px; border:1px solid #dbe3ea; color:#8a99a6;">No invoices raised.</td></tr></sc-if>
+              </tbody>
+            </table>
+
+            <div style="display:flex; justify-content:flex-end;">
+              <div style="min-width:280px; border:1px solid #dbe3ea; border-radius:8px; overflow:hidden;">
+                <div style="background:#0f2840; color:#fff; padding:8px 14px; font-size:11px; font-weight:700; letter-spacing:.06em;">ORDER P&amp;L ({{ opr.ccy }})</div>
+                <div style="padding:10px 14px; font-size:12px;">
+                  <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="color:#54646f;">Billed</span><strong style="font-family:'IBM Plex Mono',monospace;">{{ opr.billed }}</strong></div>
+                  <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="color:#54646f;">Total Cost</span><strong style="font-family:'IBM Plex Mono',monospace;">{{ opr.cost }}</strong></div>
+                  <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="color:#54646f;">Received</span><strong style="font-family:'IBM Plex Mono',monospace;">{{ opr.received }}</strong></div>
+                  <div style="display:flex; justify-content:space-between; margin-bottom:7px;"><span style="color:#54646f;">Pending</span><strong style="font-family:'IBM Plex Mono',monospace;">{{ opr.pending }}</strong></div>
+                  <div style="display:flex; justify-content:space-between; border-top:1px solid #dbe3ea; padding-top:7px;"><span style="font-weight:700;">Profit</span><strong style="font-family:'IBM Plex Mono',monospace;">{{ opr.profit }}</strong></div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
         </div>
       </div>
     </div>
@@ -2143,6 +2213,8 @@ class Component extends DCLogic {
       settingsTab: 'customers',
       regions: ['IND','SG','UAE','GLB'],
       regionInput: '',
+      usdRate: '83',
+      displayCcy: 'native',
       commissionConfig: { mode: 'percent', basis: 'profit', value: '0' },
       reportTab: 'case',
       statusFilter: '',
@@ -2176,6 +2248,7 @@ class Component extends DCLogic {
       if (d.users) this.state.users = d.users;
       if (d.commissionConfig) this.state.commissionConfig = d.commissionConfig;
       if (d.regions && d.regions.length) this.state.regions = d.regions;
+      if (d.usdRate) this.state.usdRate = d.usdRate;
       if (d._nextId) this._nextId = d._nextId;
       if (d._nextQuoteId) this._nextQuoteId = d._nextQuoteId;
       if (d._nextInvoiceId) this._nextInvoiceId = d._nextInvoiceId;
@@ -2187,13 +2260,39 @@ class Component extends DCLogic {
   snapshot() {
     return { _app: 'navtek', _version: 5, _exported: new Date().toISOString(),
       cases: this.state.cases, inventory: this.state.inventory, quotations: this.state.quotations,
-      invoices: this.state.invoices, orders: this.state.orders, customers: this.state.customers, subvendors: this.state.subvendors, serviceReports: this.state.serviceReports, users: this.state.users, regions: this.state.regions, commissionConfig: this.state.commissionConfig,
+      invoices: this.state.invoices, orders: this.state.orders, customers: this.state.customers, subvendors: this.state.subvendors, serviceReports: this.state.serviceReports, users: this.state.users, regions: this.state.regions, usdRate: this.state.usdRate, commissionConfig: this.state.commissionConfig,
       _nextId: this._nextId, _nextQuoteId: this._nextQuoteId, _nextInvoiceId: this._nextInvoiceId,
       _nextOrderId: this._nextOrderId, _nextCustomerId: this._nextCustomerId, _nextSubvendorId: this._nextSubvendorId, _nextUserId: this._nextUserId };
   }
   persist() {
     try { localStorage.setItem('navtek_state_v5', JSON.stringify(this.snapshot())); } catch (e) {}
     this.writeDataFile();
+    this.serverSave();
+  }
+  // ---- server sync (active only when an API is reachable; else pure localStorage) ----
+  apiBase() { try { return (window.__NAVTEK_API__ || '/api').replace(/\/$/, ''); } catch (e) { return '/api'; } }
+  applyData(d) {
+    if (!d || typeof d !== 'object') return;
+    const patch = {};
+    ['cases','inventory','quotations','invoices','orders','customers','subvendors','serviceReports','users','commissionConfig','regions','usdRate'].forEach(k => { if (d[k] !== undefined) patch[k] = d[k]; });
+    ['_nextId','_nextQuoteId','_nextInvoiceId','_nextOrderId','_nextCustomerId','_nextSubvendorId','_nextUserId'].forEach(k => { if (d[k]) this[k] = d[k]; });
+    if (Object.keys(patch).length) this.setState(patch);
+  }
+  serverLoad() {
+    // returns a promise; resolves true if server data was loaded
+    return fetch(this.apiBase() + '/health', { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(() => fetch(this.apiBase() + '/state', { cache: 'no-store' }))
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(d => { this._serverOn = true; if (d && d.cases !== undefined) { this.applyData(d); } else { this.serverSave(true); } return true; })
+      .catch(() => { this._serverOn = false; return false; });
+  }
+  serverSave(immediate, replace) {
+    if (!this._serverOn) return;
+    clearTimeout(this._saveTimer);
+    const url = this.apiBase() + '/state' + (replace ? '?mode=replace' : '');
+    const doSave = () => { try { fetch(url, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(this.snapshot()) }).catch(() => {}); } catch (e) {} };
+    if (immediate) doSave(); else this._saveTimer = setTimeout(doSave, 600);
   }
   // ---- File System Access persistence (works when opened directly as a file) ----
   idb(mode, fn) {
@@ -2238,12 +2337,13 @@ class Component extends DCLogic {
       const d = JSON.parse(text);
       if (!d || d._app !== 'navtek') return;
       const patch = {};
-      ['cases','inventory','quotations','invoices','orders','customers','subvendors','serviceReports','users','commissionConfig','regions'].forEach(k => { if (d[k]) patch[k] = d[k]; });
+      ['cases','inventory','quotations','invoices','orders','customers','subvendors','serviceReports','users','commissionConfig','regions','usdRate'].forEach(k => { if (d[k]) patch[k] = d[k]; });
       ['_nextId','_nextQuoteId','_nextInvoiceId','_nextOrderId','_nextCustomerId','_nextSubvendorId','_nextUserId'].forEach(k => { if (d[k]) this[k] = d[k]; });
       this.setState(patch);
     } catch (e) {}
   }
   componentDidMount() {
+    this.serverLoad();
     try { const cu = localStorage.getItem('navtek_currentUser'); if (cu) { const u = this.state.users.find(x => String(x.id) === cu && x.active); if (u) this.setState({ currentUserId: u.id, view: this.landingView(u) }); } } catch (e) {}
     this.tryRestoreDataFile();
     this.persist();
@@ -2251,7 +2351,20 @@ class Component extends DCLogic {
     setTimeout(() => { try { this.forceUpdate(); } catch (e) {} }, 0);
     setTimeout(() => { try { this.setState({ _tick: Date.now() }); } catch (e) {} }, 80);
   }
-  componentDidUpdate() { this.persist(); }
+  componentDidUpdate() {
+    // Auto-commit the working order into the saved orders list so payments,
+    // vendor POs, expenses and invoice links reflect everywhere (dashboard, PDF,
+    // reports) and persist — without needing a manual "Update Order" click.
+    const wo = this.state.order;
+    if (wo && wo.id) {
+      const cur = this.state.orders.find(o => o.id === wo.id);
+      if (cur && cur !== wo && JSON.stringify(cur) !== JSON.stringify(wo)) {
+        this.setState(s => ({ orders: s.orders.map(o => o.id === wo.id ? wo : o) }));
+        return;
+      }
+    }
+    this.persist();
+  }
 
   backupData() {
     try {
@@ -2271,9 +2384,9 @@ class Component extends DCLogic {
         const d = JSON.parse(e.target.result);
         if (!d || d._app !== 'navtek') { alert('Not a valid Navtek backup file.'); return; }
         const patch = {};
-        ['cases','inventory','quotations','invoices','orders','customers','subvendors','serviceReports','users','commissionConfig','regions'].forEach(k => { if (d[k]) patch[k] = d[k]; });
+        ['cases','inventory','quotations','invoices','orders','customers','subvendors','serviceReports','users','commissionConfig','regions','usdRate'].forEach(k => { if (d[k]) patch[k] = d[k]; });
         ['_nextId','_nextQuoteId','_nextInvoiceId','_nextOrderId','_nextCustomerId','_nextSubvendorId','_nextUserId'].forEach(k => { if (d[k]) this[k] = d[k]; });
-        this.setState(patch, () => { this.persist(); alert('Backup restored successfully.'); });
+        this.setState(patch, () => { this.persist(); this.serverSave(true, true); alert('Backup restored successfully.'); });
       } catch (err) { alert('Restore failed: ' + err.message); }
     };
     reader.readAsText(file);
@@ -2286,7 +2399,7 @@ class Component extends DCLogic {
     this.setState({ cases: [], inventory: seed.inventory, quotations: [], invoices: [], orders: [],
       customers: [], subvendors: [], serviceReports: [], users: seed.users, commissionConfig: { mode: 'percent', basis: 'profit', value: '0' }, form: this.blankForm(), quote: this.blankQuote(),
       invoice: this.blankInvoice(), order: this.blankOrder(), service: this.blankServiceReport(), detailId: null, search: '', view: 'enquiries' },
-      () => this.persist());
+      () => { this.persist(); this.serverSave(true, true); });
   }
 
   todayStr() {
@@ -2301,6 +2414,21 @@ class Component extends DCLogic {
     const sym = c === 'USD' ? '$' : '₹';
     const loc = c === 'USD' ? 'en-US' : 'en-IN';
     return sym + n.toLocaleString(loc, { maximumFractionDigits: 2 });
+  }
+  // ---- currency conversion (manual USD rate from Settings) ----
+  rate() { return Number(this.state.usdRate) || 83; }
+  // convert an (INR, USD) pair into a single number in target currency
+  inCcy(inr, usd, ccy) { const r = this.rate(); return ccy === 'USD' ? ((usd || 0) + (inr || 0) / r) : ((inr || 0) + (usd || 0) * r); }
+  // display an (INR, USD) pair per the active display toggle (native shows each non-zero part)
+  money(inr, usd, nativeCcy) {
+    const mode = this.state.displayCcy || 'native';
+    if (mode === 'INR') return this.fmt(this.inCcy(inr, usd, 'INR'), 'INR');
+    if (mode === 'USD') return this.fmt(this.inCcy(inr, usd, 'USD'), 'USD');
+    if (nativeCcy) return this.fmt(this.inCcy(inr, usd, nativeCcy), nativeCcy);
+    const parts = [];
+    if (Math.abs(inr || 0) > 0.005) parts.push(this.fmt(inr, 'INR'));
+    if (Math.abs(usd || 0) > 0.005) parts.push(this.fmt(usd, 'USD'));
+    return parts.length ? parts.join(' / ') : this.fmt(0, 'INR');
   }
 
   blankForm() {
@@ -2431,6 +2559,24 @@ class Component extends DCLogic {
   nextOrderNo(region) { return this.nextDocNo('ORD', region); }
   nextPoNo(region) { return this.nextDocNo('PO', region); }
   nextInvDocNo(region, proforma) { return this.nextDocNo(proforma ? 'PINV' : 'INV', region); }
+  // Collision-proof id for new records (safe when two users create at once).
+  newId() { return Date.now() * 1000 + Math.floor(Math.random() * 1000); }
+  // Allocate the authoritative document number. Server assigns it atomically at
+  // save time (first save -> …-001, next -> …-002); local counter is the
+  // single-user fallback when no server is present.
+  async allocDocNo(prefix, region, dateStr) {
+    const reg = region || 'IND';
+    if (this._serverOn) {
+      try {
+        const d = dateStr ? new Date(dateStr) : new Date();
+        const period = String(d.getMonth() + 1).padStart(2, '0') + '-' + d.getFullYear();
+        const r = await fetch(this.apiBase() + '/seq', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prefix, region: reg, period }) });
+        const j = await r.json();
+        if (j && j.number) return j.number;
+      } catch (e) {}
+    }
+    return this.nextDocNo(prefix, reg);
+  }
 
   seedCases() {
     // Clean slate — all numbering starts from 001. Add your own records in the app.
@@ -2472,7 +2618,9 @@ class Component extends DCLogic {
     val = (val||'').trim();
     if (val && !inv[key].some(x => x.toLowerCase() === val.toLowerCase())) inv[key] = [...inv[key], val];
   }
-  saveEnquiry() {
+  async saveEnquiry() {
+    const f0 = this.state.form;
+    const allocId = f0.editId ? null : await this.allocDocNo(this.props.caseIdPrefix ?? 'NAV', f0.region, f0.date);
     this.setState(s => {
       const f = s.form;
       const inv = { ...s.inventory };
@@ -2492,9 +2640,9 @@ class Component extends DCLogic {
       };
       if (f.editId) { cases = cases.map(c => c.id === f.editId ? { ...c, ...payload } : c); }
       else {
-        const id = this._nextId++;
+        const id = this.newId();
         const srNo = cases.reduce((m, c) => Math.max(m, c.srNo), 0) + 1;
-        cases.push({ id, srNo, caseId: this.computeCaseId(f), selectedSubQuoteId: null, subSelectReason: '', ...payload });
+        cases.push({ id, srNo, caseId: allocId || this.computeCaseId(f), selectedSubQuoteId: null, subSelectReason: '', ...payload });
       }
       return { cases, inventory: inv, form: this.blankForm(), view: 'enquiries' };
     });
@@ -2527,6 +2675,25 @@ class Component extends DCLogic {
   // ---- regions master ----
   addRegion() { this.setState(s => { const v = (s.regionInput||'').trim().toUpperCase(); if (!v || s.regions.includes(v)) return { regionInput: '' }; return { regions: [...s.regions, v], regionInput: '' }; }, () => this.persist()); }
   removeRegion(r) { this.setState(s => ({ regions: s.regions.filter(x => x !== r) }), () => this.persist()); }
+  // ---- Excel import (requires the server; no-op message otherwise) ----
+  downloadExcelTemplate() {
+    if (!this._serverOn) { this.setState({ excelNote: 'Excel import needs the hosted server (not available in this preview).' }); return; }
+    try { window.open(this.apiBase() + '/import/template', '_blank'); } catch (e) {}
+  }
+  importExcel(file) {
+    if (!this._serverOn) { this.setState({ excelNote: 'Excel import needs the hosted server (not available in this preview).' }); return; }
+    this.setState({ excelNote: 'Importing …' });
+    const fd = new FormData(); fd.append('file', file);
+    fetch(this.apiBase() + '/import', { method: 'POST', body: fd })
+      .then(r => r.json())
+      .then(res => {
+        if (res.error) { this.setState({ excelNote: 'Import failed: ' + res.error }); return; }
+        if (res.state) this.applyData(res.state);
+        const parts = Object.entries(res.report || {}).map(([k, v]) => `${k}: +${v.inserted||0}/~${v.updated||0}${(v.errors&&v.errors.length)?` (${v.errors.length} err)`:''}`);
+        this.setState({ excelNote: 'Imported — ' + (parts.join(' · ') || 'no rows') });
+      })
+      .catch(e => this.setState({ excelNote: 'Import failed: ' + e.message }));
+  }
 
   // ---- doc compute (shared by quote + invoice) ----
   computeDoc(items, currency, discount) {
@@ -2652,10 +2819,12 @@ class Component extends DCLogic {
   addInvItem() { this.setState(s => ({ invoice: { ...s.invoice, items: [...s.invoice.items, this.blankItem()] } })); }
   removeInvItem(i) { this.setState(s => { const items = s.invoice.items.filter((_, idx) => idx !== i); return { invoice: { ...s.invoice, items: items.length ? items : [this.blankItem()] } }; }); }
   updateInvItem(i, field, value) { this.setState(s => ({ invoice: { ...s.invoice, items: s.invoice.items.map((it, idx) => idx === i ? { ...it, [field]: value } : it) } })); }
-  saveInvoice() {
+  async saveInvoice() {
+    const iv0 = this.state.invoice;
+    const allocNo = !iv0.invoiceNo ? await this.allocDocNo(iv0.docType === 'PROFORMA' ? 'PINV' : 'INV', iv0.region, iv0.invoiceDate) : null;
     this.setState(s => {
       const iv = { ...s.invoice, items: s.invoice.items.map(it => ({ ...it })) };
-      if (!iv.invoiceNo) iv.invoiceNo = this.nextInvDocNo(iv.region, iv.docType==='PROFORMA');
+      if (!iv.invoiceNo) iv.invoiceNo = allocNo || this.nextInvDocNo(iv.region, iv.docType==='PROFORMA');
       let invoices = [...s.invoices];
       let orders = s.orders;
       if (iv.id) { invoices = invoices.map(x => x.id === iv.id ? iv : x); }
@@ -2668,12 +2837,14 @@ class Component extends DCLogic {
           else { iv.id = this._nextInvoiceId++; invoices.push(iv); }
         } else { iv.id = this._nextInvoiceId++; invoices.push(iv); }
       }
-      // auto-link invoice to its order
+      // auto-link invoice to its order (update both the saved list and the open working copy)
+      let order = s.order;
       if (iv.orderId) {
-        orders = s.orders.map(o => String(o.id) === String(iv.orderId)
-          ? { ...o, invoiceIds: o.invoiceIds.includes(iv.id) ? o.invoiceIds : [...o.invoiceIds, iv.id] } : o);
+        const link = o => ({ ...o, invoiceIds: o.invoiceIds.includes(iv.id) ? o.invoiceIds : [...o.invoiceIds, iv.id] });
+        orders = s.orders.map(o => String(o.id) === String(iv.orderId) ? link(o) : o);
+        if (s.order && String(s.order.id) === String(iv.orderId)) order = link(s.order);
       }
-      return { invoices, orders, invoice: { ...iv } };
+      return { invoices, orders, order, invoice: { ...iv } };
     });
   }
   generateInvoicePdf() {
@@ -2761,18 +2932,21 @@ class Component extends DCLogic {
     (p.items||[]).forEach(it => { const amt = (Number(it.qty)||0)*(Number(it.rate)||0); sub += amt; gst += amt * (Number(it.gst)||0) / 100; });
     return { sub, gst, grand: sub + gst };
   }
-  saveOrder() {
+  async saveOrder() {
     let savedId;
+    const o0 = this.state.order;
+    const allocNo = (!o0.id && !o0.orderNo) ? await this.allocDocNo('ORD', o0.region, o0.date) : null;
     this.setState(s => {
       const o = JSON.parse(JSON.stringify(s.order));
       let orders = [...s.orders];
       if (o.id) { orders = orders.map(x => x.id === o.id ? o : x); savedId = o.id; }
-      else { o.id = this._nextOrderId++; if (!o.orderNo) o.orderNo = this.nextOrderNo(o.region); orders.push(o); savedId = o.id; }
+      else { o.id = this.newId(); if (!o.orderNo) o.orderNo = allocNo || this.nextOrderNo(o.region); orders.push(o); savedId = o.id; }
       return { orders, order: { ...o } };
     });
     return savedId;
   }
   printPO(p) { this.setState({ showPrint: true, printMode: 'po', po: JSON.parse(JSON.stringify(p)) }); }
+  printOrder() { if (!this.state.order || !this.state.order.id) return; this.setState({ showPrint: true, printMode: 'order' }); }
 
   // ---- customers & users ----
   setCustomerForm(field, value) { this.setState(s => ({ customerForm: { ...s.customerForm, [field]: value } })); }
@@ -2821,11 +2995,13 @@ class Component extends DCLogic {
   removeServiceItem(listKey, idx) { this.setState(s => { const arr = s.service[listKey].filter((_,i)=>i!==idx); return { service: { ...s.service, [listKey]: arr.length?arr:[this.blankSrItem()] } }; }); }
   updateServiceItem(listKey, idx, field, value) { this.setState(s => ({ service: { ...s.service, [listKey]: s.service[listKey].map((it,i)=> i===idx?{...it,[field]:value}:it) } })); }
   updateServiceTime(idx, field, value) { this.setState(s => ({ service: { ...s.service, timeRows: s.service.timeRows.map((r,i)=> i===idx?{...r,[field]:value}:r) } })); }
-  saveService() {
+  async saveService() {
     let savedId;
+    const sr0 = this.state.service;
+    const allocNo = !sr0.srNo ? await this.allocDocNo('SR', sr0.region, sr0.date) : null;
     this.setState(s => {
       const sr = JSON.parse(JSON.stringify(s.service));
-      if (!sr.srNo) sr.srNo = this.nextDocNo('SR', sr.region);
+      if (!sr.srNo) sr.srNo = allocNo || this.nextDocNo('SR', sr.region);
       const cu = this.currentUser();
       if (cu && !sr.engineer && this.userPerms(cu).includes('service') && !this.userPerms(cu).includes('admin')) { sr.engineerId = String(cu.id); sr.engineer = cu.name; }
       let serviceReports = [...s.serviceReports];
@@ -3277,13 +3453,26 @@ class Component extends DCLogic {
       onRef: ev => this.updatePayment(p.id,'reference',ev.target.value), onType: ev => this.updatePayment(p.id,'type',ev.target.value),
       onRemove: () => this.removePayment(p.id) }));
     const ofin = this.orderFinancials(o);
-    const orderFin = { exp: this.fmt(ofin.expINR,'INR') + (ofin.expUSD? ' / '+this.fmt(ofin.expUSD,'USD'):''),
-      po: this.fmt(ofin.poINR,'INR') + (ofin.poUSD? ' / '+this.fmt(ofin.poUSD,'USD'):''),
-      inv: this.fmt(ofin.billedINR,'INR') + (ofin.billedUSD? ' / '+this.fmt(ofin.billedUSD,'USD'):''),
-      cost: this.fmt(ofin.costINR,'INR') + (ofin.costUSD? ' / '+this.fmt(ofin.costUSD,'USD'):''),
-      received: this.fmt(ofin.rcvINR,'INR') + (ofin.rcvUSD? ' / '+this.fmt(ofin.rcvUSD,'USD'):''),
-      pending: this.fmt(ofin.pendINR,'INR') + (ofin.pendUSD? ' / '+this.fmt(ofin.pendUSD,'USD'):''),
-      profit: this.fmt(ofin.profitINR,'INR') + (ofin.profitUSD? ' / '+this.fmt(ofin.profitUSD,'USD'):'') };
+    const orderCcy = o.poCurrency || 'INR';
+    const orderFin = {
+      exp: this.fmt(this.inCcy(ofin.expINR, ofin.expUSD, orderCcy), orderCcy),
+      po: this.fmt(this.inCcy(ofin.poINR, ofin.poUSD, orderCcy), orderCcy),
+      inv: this.fmt(this.inCcy(ofin.billedINR, ofin.billedUSD, orderCcy), orderCcy),
+      cost: this.fmt(this.inCcy(ofin.costINR, ofin.costUSD, orderCcy), orderCcy),
+      received: this.fmt(this.inCcy(ofin.rcvINR, ofin.rcvUSD, orderCcy), orderCcy),
+      pending: this.fmt(this.inCcy(ofin.pendINR, ofin.pendUSD, orderCcy), orderCcy),
+      profit: this.fmt(this.inCcy(ofin.profitINR, ofin.profitUSD, orderCcy), orderCcy),
+      ccy: orderCcy };
+    const orderPrint = {
+      orderNo: o.orderNo || '—', dateDisp: this.fmtDate(o.date), customer: o.customer || '—',
+      poNumber: o.poNumber || '—', vessel: o.vessel || '—', location: o.location || '—',
+      quoteRef: o.quoteRef || o.caseId || '—', status: o.status || '—', ccy: orderCcy,
+      billed: orderFin.inv, cost: orderFin.cost, received: orderFin.received, pending: orderFin.pending, profit: orderFin.profit,
+      pos: (o.vendorPOs||[]).filter(p => !p.cancelled).map(p => ({ poNo: p.poNo || '—', vendor: p.vendorName || '—', amount: this.fmt((p.items||[]).reduce((a,it)=>a+(Number(it.rate)||0)*(Number(it.qty)||0),0)*(1+(Number(p.gst)||0)/100), p.currency||'INR') })),
+      noPos: (o.vendorPOs||[]).filter(p => !p.cancelled).length === 0,
+      invs: (o.invoiceIds||[]).map(id => s.invoices.find(x => String(x.id)===String(id))).filter(Boolean).filter(iv => !iv.cancelled).map(iv => { const d = this.computeDoc(iv.items, iv.currency, { type: iv.discountType, value: iv.discountValue }); const recv = this.invoiceReceived(iv); return { invoiceNo: iv.invoiceNo, dateDisp: this.fmtDate(iv.invoiceDate), amountDisp: this.fmt(d.grand, iv.currency), payStatus: recv<=0?'Awaiting':(recv>=d.grand-0.5?'Received':'Partial') }; }),
+      noInvs: (o.invoiceIds||[]).map(id => s.invoices.find(x => String(x.id)===String(id))).filter(Boolean).filter(iv => !iv.cancelled).length === 0,
+    };
     const orderFullyPaid = ofin.fullyPaid;
     const orderCommObj = this.orderCommission(o);
     const showOrderCommission = this.commissionActive();
@@ -3358,40 +3547,38 @@ class Component extends DCLogic {
     // ===== BALANCE SHEET =====
     const bsOrders = s.orders.filter(ord => { if (s.bsFrom && (ord.date||'') < s.bsFrom) return false; if (s.bsTo && (ord.date||'') > s.bsTo) return false; return true; });
     const balRows = bsOrders.map(ord => { const f = this.orderFinancials(ord); const cx = ord.status==='CANCELLED'; return { orderNo: ord.orderNo, customer: ord.customer||'—', vessel: ord.vessel||'—', region: ord.region||'IND', cancelled: cx, rowStyle: cx?'border-top:1px solid #eef2f5; opacity:.5; text-decoration:line-through;':'border-top:1px solid #eef2f5;',
-      inv: this.fmt(f.billedINR,'INR') + (f.billedUSD? ' / '+this.fmt(f.billedUSD,'USD'):''), cost: this.fmt(f.costINR,'INR') + (f.costUSD? ' / '+this.fmt(f.costUSD,'USD'):''),
-      received: this.fmt(f.rcvINR,'INR') + (f.rcvUSD? ' / '+this.fmt(f.rcvUSD,'USD'):''), pending: this.fmt(f.pendINR,'INR') + (f.pendUSD? ' / '+this.fmt(f.pendUSD,'USD'):''),
-      profit: this.fmt(f.profitINR,'INR') + (f.profitUSD? ' / '+this.fmt(f.profitUSD,'USD'):''),
+      inv: this.money(f.billedINR, f.billedUSD, ord.poCurrency||'INR'), cost: this.money(f.costINR, f.costUSD, ord.poCurrency||'INR'),
+      received: this.money(f.rcvINR, f.rcvUSD, ord.poCurrency||'INR'), pending: this.money(f.pendINR, f.pendUSD, ord.poCurrency||'INR'),
+      profit: this.money(f.profitINR, f.profitUSD, ord.poCurrency||'INR'),
       profitColor: (f.profitINR+f.profitUSD)>=0 ? '#1f7a45' : '#b3322f' }; });
-    let totInv=0, totCost=0, totProfit=0, totRcv=0, totPend=0, totInvU=0, totRcvU=0, totPendU=0;
-    bsOrders.forEach(ord => { if (ord.status==='CANCELLED') return; const f = this.orderFinancials(ord); totInv+=f.billedINR; totCost+=f.costINR; totProfit+=f.profitINR; totRcv+=f.rcvINR; totPend+=f.pendINR; totInvU+=f.billedUSD; totRcvU+=f.rcvUSD; totPendU+=f.pendUSD; });
+    let totInv=0, totCost=0, totProfit=0, totRcv=0, totPend=0, totInvU=0, totRcvU=0, totPendU=0, totCostU=0, totProfitU=0;
+    bsOrders.forEach(ord => { if (ord.status==='CANCELLED') return; const f = this.orderFinancials(ord); totInv+=f.billedINR; totCost+=f.costINR; totProfit+=f.profitINR; totRcv+=f.rcvINR; totPend+=f.pendINR; totInvU+=f.billedUSD; totRcvU+=f.rcvUSD; totPendU+=f.pendUSD; totCostU+=f.costUSD; totProfitU+=f.profitUSD; });
     const regMap = {};
     bsOrders.forEach(ord => { if (ord.status==='CANCELLED') return; const f = this.orderFinancials(ord); const r = ord.region||'IND'; if (!regMap[r]) regMap[r] = { region:r, billedINR:0, billedUSD:0, rcvINR:0, rcvUSD:0, pendINR:0, pendUSD:0 }; const m=regMap[r]; m.billedINR+=f.billedINR; m.billedUSD+=f.billedUSD; m.rcvINR+=f.rcvINR; m.rcvUSD+=f.rcvUSD; m.pendINR+=f.pendINR; m.pendUSD+=f.pendUSD; });
-    const regionRows = Object.values(regMap).sort((a,b)=> (b.billedINR+b.billedUSD)-(a.billedINR+a.billedUSD)).map(m => ({ region:m.region,
-      billed: this.fmt(m.billedINR,'INR') + (m.billedUSD? ' / '+this.fmt(m.billedUSD,'USD'):''),
-      received: this.fmt(m.rcvINR,'INR') + (m.rcvUSD? ' / '+this.fmt(m.rcvUSD,'USD'):''),
-      pending: this.fmt(m.pendINR,'INR') + (m.pendUSD? ' / '+this.fmt(m.pendUSD,'USD'):'') }));
-    const hasRegionRows = regionRows.length>0;
+    const balRegionRows = Object.values(regMap).sort((a,b)=> (b.billedINR+b.billedUSD)-(a.billedINR+a.billedUSD)).map(m => ({ region:m.region,
+      billed: this.money(m.billedINR, m.billedUSD), received: this.money(m.rcvINR, m.rcvUSD), pending: this.money(m.pendINR, m.pendUSD) }));
+    const hasBalRegionRows = balRegionRows.length>0;
     // payment-status summary (orders grouped by collection status)
     const payBuckets = { 'Fully Received':{c:0,bi:0,bu:0,ri:0,ru:0}, 'Partially Received':{c:0,bi:0,bu:0,ri:0,ru:0}, 'Awaiting Payment':{c:0,bi:0,bu:0,ri:0,ru:0} };
     bsOrders.forEach(ord => { if (ord.status==='CANCELLED') return; const f = this.orderFinancials(ord); const billed=f.billedINR+f.billedUSD, rcv=f.rcvINR+f.rcvUSD;
       let k = 'Awaiting Payment'; if (billed>0 && rcv>=billed-0.01) k='Fully Received'; else if (rcv>0.01) k='Partially Received';
       const b=payBuckets[k]; b.c++; b.bi+=f.billedINR; b.bu+=f.billedUSD; b.ri+=f.rcvINR; b.ru+=f.rcvUSD; });
     const payStatusRows = Object.keys(payBuckets).map(k => { const b=payBuckets[k]; const pendI=b.bi-b.ri, pendU=b.bu-b.ru; return { label:k, count:String(b.c),
-      billed:this.fmt(b.bi,'INR')+(b.bu?' / '+this.fmt(b.bu,'USD'):''), received:this.fmt(b.ri,'INR')+(b.ru?' / '+this.fmt(b.ru,'USD'):''), pending:this.fmt(pendI,'INR')+(pendU?' / '+this.fmt(pendU,'USD'):''),
+      billed:this.money(b.bi,b.bu), received:this.money(b.ri,b.ru), pending:this.money(pendI,pendU),
       color: k==='Fully Received'?'#1f7a45':(k==='Partially Received'?'#b5701a':'#b3322f') }; });
     const bsRangeNote = (s.bsFrom||s.bsTo) ? `${bsOrders.length} order(s) in range` : `all ${bsOrders.length} order(s)`;
     const balCards = [
-      { label:'Total Billed (INR)', value:this.fmt(totInv,'INR'), color:'#1f5e8c' },
-      { label:'Received', value:this.fmt(totRcv,'INR') + (totRcvU? ' / '+this.fmt(totRcvU,'USD'):''), color:'#1f7a45' },
-      { label:'Pending', value:this.fmt(totPend,'INR') + (totPendU? ' / '+this.fmt(totPendU,'USD'):''), color:'#b5701a' },
-      { label:'Net Profit (Orders)', value:this.fmt(totProfit,'INR'), color: totProfit>=0?'#1f7a45':'#b3322f' },
+      { label:'Total Billed', value:this.money(totInv,totInvU), color:'#1f5e8c' },
+      { label:'Received', value:this.money(totRcv,totRcvU), color:'#1f7a45' },
+      { label:'Pending', value:this.money(totPend,totPendU), color:'#b5701a' },
+      { label:'Net Profit (Orders)', value:this.money(totProfit,totProfitU), color: (totProfit+totProfitU)>=0?'#1f7a45':'#b3322f' },
     ];
-    const balTotals = { inv: this.fmt(totInv,'INR') + (totInvU? ' / '+this.fmt(totInvU,'USD'):''), cost: this.fmt(totCost,'INR'), profit: this.fmt(totProfit,'INR'),
-      received: this.fmt(totRcv,'INR') + (totRcvU? ' / '+this.fmt(totRcvU,'USD'):''), pending: this.fmt(totPend,'INR') + (totPendU? ' / '+this.fmt(totPendU,'USD'):'') };
+    const balTotals = { inv: this.money(totInv,totInvU), cost: this.money(totCost,totCostU), profit: this.money(totProfit,totProfitU),
+      received: this.money(totRcv,totRcvU), pending: this.money(totPend,totPendU) };
 
     // ===== REPORTS: orders + invoices + sub-vendor POs =====
     const orderReportRows = repOrders.map(ord => { const f = this.orderFinancials(ord); const cx = ord.status==='CANCELLED'; return { orderNo: ord.orderNo, customer: ord.customer||'—', vessel: ord.vessel||'—', poNumber: ord.poNumber||'—', region: ord.region||'IND', status: ord.status, rowStyle: cx?'border-top:1px solid #eef2f5; cursor:pointer; opacity:.5;':'border-top:1px solid #eef2f5; cursor:pointer;', statusStyle: this.statusStyleFor(cx?'CANCELLED':(ord.status==='COMPLETED'||ord.status==='CLOSED'?'WON':'OPEN')),
-      exp: this.fmt(f.costINR,'INR'), inv: this.fmt(f.billedINR,'INR'), pending: this.fmt(f.pendINR,'INR'), invCount: String(ord.invoiceIds.length),
+      exp: this.money(f.costINR,f.costUSD, ord.poCurrency||'INR'), inv: this.money(f.billedINR,f.billedUSD, ord.poCurrency||'INR'), pending: this.money(f.pendINR,f.pendUSD, ord.poCurrency||'INR'), invCount: String(ord.invoiceIds.length),
       onOpen: () => { this.loadOrder(ord.id); this.setState({ view: 'orders' }); } }; });
     const subVendorRows = [];
     repOrders.forEach(ord => (ord.vendorPOs||[]).forEach(p => { const t = this.poTotal(p); const pp = this.poPaid(p); const paid = p.currency==='USD'?pp.usd:pp.inr; subVendorRows.push({ poNo: p.poNo, orderNo: ord.orderNo, vendor: p.vendorName||'—', gstin: p.vendorGstin||'—', dateDisp: this.fmtDate(p.date), totalDisp: this.fmt(t.grand, p.currency), paidDisp: this.fmt(paid, p.currency), pendDisp: this.fmt(t.grand - paid, p.currency), onOpen: () => { this.loadOrder(ord.id); this.setState({ view: 'orders' }); } }); }));
@@ -3400,7 +3587,7 @@ class Component extends DCLogic {
     if (s.invTo) invList = invList.filter(iv => iv.invoiceDate <= s.invTo);
     invList.sort((a,b)=> a.invoiceDate < b.invoiceDate ? 1 : -1);
     const invReportRows = invList.map(iv => { const doc = this.computeDoc(iv.items, iv.currency, { type: iv.discountType, value: iv.discountValue }); const gstAmt = doc.cgst+doc.sgst+doc.igst; const recv = this.invoiceReceived(iv); const pend = doc.grand - recv; const st = iv.cancelled ? 'CANCELLED' : this.invoicePayStatus(iv); return { invoiceNo: iv.invoiceNo, docType: iv.docType||'INVOICE', isProforma: iv.docType==='PROFORMA', cancelled: !!iv.cancelled, rowStyle: iv.cancelled ? 'border-top:1px solid #eef2f5; cursor:pointer; opacity:.5;' : 'border-top:1px solid #eef2f5; cursor:pointer;', dateDisp: this.fmtDate(iv.invoiceDate), customer: iv.customer||'—', vessel: iv.vessel||'—',
-      amountDisp: this.fmt(doc.grand, iv.currency), gstDisp: this.fmt(gstAmt, iv.currency), receivedDisp: this.fmt(recv, iv.currency), pendingDisp: this.fmt(pend, iv.currency),
+      amountDisp: this.money(iv.currency==='USD'?0:doc.grand, iv.currency==='USD'?doc.grand:0, iv.currency), gstDisp: this.money(iv.currency==='USD'?0:gstAmt, iv.currency==='USD'?gstAmt:0, iv.currency), receivedDisp: this.money(iv.currency==='USD'?0:recv, iv.currency==='USD'?recv:0, iv.currency), pendingDisp: this.money(iv.currency==='USD'?0:pend, iv.currency==='USD'?pend:0, iv.currency),
       payStatus: st, payStyle: this.payStyleFor(st),
       onOpen: () => { this.loadInvoice(iv.id); this.setState({ view: 'invoice' }); } }; });
     const invReportNote = `${invList.length} invoice(s)`;
@@ -3412,6 +3599,7 @@ class Component extends DCLogic {
     const isPOPrint = s.printMode === 'po';
     const isInvoicePrint = s.printMode === 'invoice';
     const isServicePrint = s.printMode === 'service';
+    const isOrderPrint = s.printMode === 'order';
     const svc0 = s.service || {};
     const jt = svc0.jobType || {};
     const jtText = [jt.call&&'Request Call', jt.warranty&&'Warranty', jt.installation&&'Installation', jt.followup&&'Follow-up'].filter(Boolean).join(', ') || '—';
@@ -3433,13 +3621,14 @@ class Component extends DCLogic {
       : PD.rows.map(r => ({ sr: r.sr, desc: r.desc || '—', unitDisp: this.fmt(r.unitPrice, pcur), qty: r.qty || '0', amountDisp: this.fmt(r.amount, pcur), gstDisp: `${r.cgst||0}/${r.sgst||0}/${r.igst||0}` }));
     let printBill, printDocNo, printDocDate, printRefValue;
     if (isPOPrint) {
-      printBill = { company: pp.vendorName||'—', vessel: pp.vendorGstin||'—', location: pp.vendorAddress||'—', address: '', hasAddress: false };
+      const jobVessel = s.order.vessel || '—'; const jobLoc = s.order.location || '—';
+      printBill = { heading: 'Vendor / Supply To', company: pp.vendorName||'—', line1Label: 'GSTIN', vessel: pp.vendorGstin||'—', line2Label: 'Vessel', location: jobVessel, address: (pp.vendorAddress||'') + (pp.vendorAddress && jobLoc!=='—' ? '  ·  Job Loc: '+jobLoc : (jobLoc!=='—'?'Job Loc: '+jobLoc:'')), hasAddress: !!(pp.vendorAddress || jobLoc!=='—') };
       printDocNo = pp.poNo; printDocDate = this.fmtDate(pp.date); printRefValue = s.order.orderNo || '—';
     } else if (isInvoicePrint) {
-      printBill = { company: iv.customer||'—', vessel: iv.vessel||'—', location: iv.location||'—', address: iv.address, hasAddress: !!iv.address };
+      printBill = { heading: 'Bill To', company: iv.customer||'—', line1Label: 'Vessel', vessel: iv.vessel||'—', line2Label: 'Location', location: iv.location||'—', address: iv.address, hasAddress: !!iv.address };
       printDocNo = iv.invoiceNo; printDocDate = this.fmtDate(iv.invoiceDate); printRefValue = iv.quoteRef || iv.caseId || '—';
     } else {
-      printBill = { company: quoteCase.company||'—', vessel: quoteCase.vessel||'—', location: quoteCase.location||'—', address: '', hasAddress: false };
+      printBill = { heading: 'Bill To', company: quoteCase.company||'—', line1Label: 'Vessel', vessel: quoteCase.vessel||'—', line2Label: 'Location', location: quoteCase.location||'—', address: '', hasAddress: false };
       printDocNo = s.quote.quoteNo; printDocDate = this.fmtDate(s.quote.date); printRefValue = s.quote.caseId || '—';
     }
 
@@ -3463,7 +3652,7 @@ class Component extends DCLogic {
       // form
       form: s.form, onField, srNoPreview: s.form.editId ? String((s.cases.find(c=>c.id===s.form.editId)||{}).srNo||'') : String(s.cases.reduce((m,c)=>Math.max(m,c.srNo),0)+1),
       formCompanyOptions, formCoordinatorOptions, orderCoordinatorOptions, serviceCustomerOptions,
-      caseIdPreview: this.computeCaseId(s.form), formHeading: s.form.editId ? 'Edit Enquiry — ' + this.computeCaseId(s.form) : 'New Enquiry',
+      caseIdPreview: this.computeCaseId(s.form) + (s.form.editId ? '' : ' · provisional (final no. on save)'), formHeading: s.form.editId ? 'Edit Enquiry — ' + this.computeCaseId(s.form) : 'New Enquiry',
       saveLabel: s.form.editId ? 'Update Enquiry' : 'Save Enquiry',
       onSaveEnquiry: () => this.saveEnquiry(), onCancelForm: () => this.setState({ view:'enquiries', form: this.blankForm() }),
       formSubQuotes, onAddSubQuote: () => this.addSubQuote(), noSubvendorsRegistered: subvNamesList.length === 0,
@@ -3497,8 +3686,8 @@ class Component extends DCLogic {
       invCanCancel: !!iv.id && !iv.cancelled, invIsCancelled: !!iv.cancelled, onCancelInvoice: () => this.cancelInvoice(iv.id),
       // print
       showPrint: s.showPrint, onClosePrint: () => this.setState({ showPrint: false }), onPrintNow: () => this.printNow(),
-      printItems, printTitle: isServicePrint ? 'SERVICE REPORT' : (isPOPrint ? 'PURCHASE ORDER' : (isInvoicePrint ? (s.invoice.docType==='PROFORMA' ? 'PROFORMA INVOICE' : 'TAX INVOICE') : 'QUOTATION')),
-      isServicePrint, notServicePrint: !isServicePrint, svc: svcPrint,
+      printItems, printTitle: isServicePrint ? 'SERVICE REPORT' : (isOrderPrint ? 'ORDER SUMMARY' : (isPOPrint ? 'PURCHASE ORDER' : (isInvoicePrint ? (s.invoice.docType==='PROFORMA' ? 'PROFORMA INVOICE' : 'TAX INVOICE') : 'QUOTATION'))),
+      isServicePrint, isOrderPrint, notServicePrint: !isServicePrint && !isOrderPrint, svc: svcPrint, opr: orderPrint,
       printDocLabel: isPOPrint ? 'PO No' : (isInvoicePrint ? 'Invoice No' : 'Quotation No'), printRefLabel: isPOPrint ? 'For Order' : (isInvoicePrint ? 'Quote Ref' : 'Ref Case'),
       printBill, printDocNo, printDocDate, printRefValue, printHasPo: isInvoicePrint && !!iv.poNo, printPoValue: iv.poNo || '—',
       printSubtotal: this.fmt(PD.subtotal, pcur), printHasDiscount: isInvoicePrint && PD.discountAmt>0, printDiscount: this.fmt(PD.discountAmt, pcur), printTaxable: this.fmt(PD.taxable, pcur),
@@ -3512,7 +3701,7 @@ class Component extends DCLogic {
       // orders
       confirmedQuoteOptions, savedOrderOptions, order: { ...o, id: o.id==null?'':String(o.id) }, hasOrder, noOrder: !hasOrder,
       onOrderFromQuote: e => this.orderFromQuote(e.target.value), onLoadOrder: e => this.loadOrder(e.target.value), onOrder,
-      orderHeading: o.id ? 'Edit Order — ' + o.orderNo : 'New Order', orderNoPreview: o.orderNo || this.nextOrderNo(o.region),
+      orderHeading: o.id ? 'Edit Order — ' + o.orderNo : 'New Order', orderNoPreview: o.orderNo || (this.nextOrderNo(o.region) + ' · provisional (final no. on save)'),
       orderSaveLabel: o.id ? 'Update Order' : 'Create Order', onSaveOrder: () => this.saveOrder(),
       expCats, orderExpenses, onAddExpense: () => this.addExpense(), orderPOs, onAddVendorPO: () => this.addVendorPO(),
       orderInvoices, hasOrderInvoices: orderInvoices.length>0, orderFin,
@@ -3524,6 +3713,7 @@ class Component extends DCLogic {
       onCloseOrder: () => this.closeOrder(), orderFullyPaid,
       onGenInvoiceFromOrder: () => { if (!o.id) return; const ex = this.activeOrderInvoice(o, 'INVOICE'); if (ex) { this.loadInvoice(ex.id); this.setState({ view: 'invoice' }); } else { this.setState({ invoice: { ...this.blankInvoice(), docType: 'INVOICE' } }, () => { this.invoiceFromOrder(o.id); this.setState({ view: 'invoice' }); }); } },
       onCancelOrder: () => this.cancelOrder(), orderIsCancelled: o.status === 'CANCELLED',
+      onPrintOrder: () => this.printOrder(), orderCanPrint: !!o.id,
       orderInvoiceLabel: this.activeOrderInvoice(o, 'INVOICE') ? 'View Tax Invoice →' : '→ Generate Tax Invoice',
       orderProformaLabel: this.activeOrderInvoice(o, 'PROFORMA') ? 'View Proforma →' : '→ Generate Proforma',
       onGenProformaFromOrder: () => { if (!o.id) return; const ex = this.activeOrderInvoice(o, 'PROFORMA'); if (ex) { this.loadInvoice(ex.id); this.setState({ view: 'invoice' }); } else { this.setState({ invoice: { ...this.blankInvoice(), docType: 'PROFORMA' } }, () => { this.invoiceFromOrder(o.id); this.setState({ view: 'invoice' }); }); } },
@@ -3537,7 +3727,7 @@ class Component extends DCLogic {
       serviceFromOrderOptions: savedOrderOptions, onServiceEngineer: e => this.setServiceEngineer(e.target.value),
       onSrJobCall: e => this.setServiceJobType('call', e.target.checked), onSrJobWarranty: e => this.setServiceJobType('warranty', e.target.checked), onSrJobInstall: e => this.setServiceJobType('installation', e.target.checked), onSrJobFollowup: e => this.setServiceJobType('followup', e.target.checked),
       srMaterials, srSpares, srTimeRows, onAddMaterial: () => this.addServiceItem('materials'), onAddSpare: () => this.addServiceItem('sparesRemoved'),
-      serviceHeading: sr.id ? 'Edit Service Report — ' + sr.srNo : 'New Service Report', svcNoPreview: sr.srNo || this.nextDocNo('SR', sr.region),
+      serviceHeading: sr.id ? 'Edit Service Report — ' + sr.srNo : 'New Service Report', svcNoPreview: sr.srNo || (this.nextDocNo('SR', sr.region) + ' · provisional (final no. on save)'),
       srSaveLabel: sr.id ? 'Update Service Report' : 'Save Service Report', onSaveService: () => this.saveService(), onGenerateServicePdf: () => this.generateServicePdf(),
       srOrderLabel: sr.orderNo ? 'Linked Order: ' + sr.orderNo : 'Not linked to an order',
       serviceReportRows, hasServiceReports: serviceReportRows.length>0, serviceCount: serviceReportRows.length, noServiceReports: serviceReportRows.length===0,
@@ -3546,6 +3736,11 @@ class Component extends DCLogic {
       regionInput: s.regionInput, onRegionInput: e => this.setState({ regionInput: e.target.value }),
       onRegionKey: e => { if (e.key === 'Enter') { e.preventDefault(); this.addRegion(); } }, onAddRegion: () => this.addRegion(),
       setIsRegions: s.settingsTab==='regions', onSettingsRegions: () => this.setState({ settingsTab:'regions' }),
+      usdRate: s.usdRate, onUsdRate: e => this.setState({ usdRate: e.target.value }, () => this.persist()),
+      displayCcy: s.displayCcy,
+      ccyToggle: ['native','INR','USD'].map(m => ({ key: m, label: m==='native'?'As created':m, active: (s.displayCcy||'native')===m,
+        onClick: () => this.setState({ displayCcy: m }),
+        style: `border:1px solid ${(s.displayCcy||'native')===m?'#0f2840':'#cdd7df'}; background:${(s.displayCcy||'native')===m?'#0f2840':'#fff'}; color:${(s.displayCcy||'native')===m?'#fff':'#54646f'}; padding:7px 14px; border-radius:7px; font-size:12px; font-weight:600; cursor:pointer;` })),
       regionTabStyle: `border:1px solid ${s.settingsTab==='regions'?'#0f2840':'#cdd7df'}; background:${s.settingsTab==='regions'?'#0f2840':'#fff'}; color:${s.settingsTab==='regions'?'#fff':'#54646f'}; padding:9px 16px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;`,
       settingsTab: s.settingsTab, setIsCustomers: s.settingsTab==='customers', setIsUsers: s.settingsTab==='users', setIsSubvendors: s.settingsTab==='subvendors',
       onSettingsCustomers: () => this.setState({ settingsTab:'customers' }), onSettingsUsers: () => this.setState({ settingsTab:'users' }), onSettingsSubvendors: () => this.setState({ settingsTab:'subvendors' }),
@@ -3560,8 +3755,11 @@ class Component extends DCLogic {
       onConnectFile: () => this.connectDataFile(), connectFileLabel: this._fileHandle ? 'Re-connect data file' : 'Connect data file (auto-save)', fileStatus: this._fileHandle ? 'Auto-save active.' : 'Not connected — data saves to browser storage only.',
       onClearAll: () => { if (confirm('Clear ALL data (cases, quotations, orders, invoices, customers, service reports)? This cannot be undone. Download a backup first if needed.')) this.clearAllData(); },
       backupNote: `${s.cases.length} cases · ${s.orders.length} orders · ${s.invoices.length} invoices`,
+      onExcelTemplate: () => this.downloadExcelTemplate(),
+      onExcelImport: e => { const f = e.target.files && e.target.files[0]; if (f) this.importExcel(f); e.target.value = ''; },
+      excelNote: s.excelNote || (this._serverOn ? 'Ready.' : 'Available in the hosted build.'),
       // balance
-      balCards, balRows, balTotals, hasBalRows: balRows.length>0, regionRows, hasRegionRows,
+      balCards, balRows, balTotals, hasBalRows: balRows.length>0, balRegionRows, hasBalRegionRows,
       bsFrom: s.bsFrom, bsTo: s.bsTo, onBsFrom: e => this.setState({ bsFrom: e.target.value }), onBsTo: e => this.setState({ bsTo: e.target.value }), payStatusRows, bsRangeNote,
       // reports orders+invoices+subvendor
       orderReportRows, hasOrderReport: orderReportRows.length>0, noOrderReport: orderReportRows.length===0, invReportRows, invReportNote, hasInvReport: invReportRows.length>0,
