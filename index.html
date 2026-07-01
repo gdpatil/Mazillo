@@ -2118,23 +2118,74 @@
               <div><span style="color:#8a99a6;">Location:</span> <strong>{{ opr.location }}</strong></div>
               <div><span style="color:#8a99a6;">Quote Ref:</span> <strong style="font-family:'IBM Plex Mono',monospace;">{{ opr.quoteRef }}</strong></div>
               <div><span style="color:#8a99a6;">Status:</span> <strong>{{ opr.status }}</strong></div>
+              <div style="grid-column:1 / -1;"><span style="color:#8a99a6;">Job Scope:</span> <strong>{{ opr.jobScope }}</strong></div>
             </div>
 
-            <div style="font-weight:700; font-size:12px; color:#0f2840; margin:14px 0 6px; letter-spacing:.04em;">SUB-VENDOR PURCHASE ORDERS</div>
-            <table style="width:100%; border-collapse:collapse; font-size:11px; margin-bottom:16px;">
-              <thead><tr style="background:#f0f4f7;"><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;">PO No</th><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;">Vendor</th><th style="text-align:right; padding:7px 9px; border:1px solid #dbe3ea;">Amount</th></tr></thead>
+            <div style="font-weight:700; font-size:12px; color:#0f2840; margin:16px 0 6px; letter-spacing:.04em;">SUB-VENDOR QUOTE COMPARISON</div>
+            <table style="width:100%; border-collapse:collapse; font-size:11px; margin-bottom:8px;">
+              <thead><tr style="background:#f0f4f7;"><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;">Sub-vendor</th><th style="text-align:center; padding:7px 9px; border:1px solid #dbe3ea;">Items</th><th style="text-align:right; padding:7px 9px; border:1px solid #dbe3ea;">Base</th><th style="text-align:right; padding:7px 9px; border:1px solid #dbe3ea;">GST</th><th style="text-align:right; padding:7px 9px; border:1px solid #dbe3ea;">Total</th><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;"></th></tr></thead>
               <tbody>
-                <sc-for list="{{ opr.pos }}" as="p" hint-placeholder-count="0"><tr><td style="padding:7px 9px; border:1px solid #dbe3ea; font-family:'IBM Plex Mono',monospace;">{{ p.poNo }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea;">{{ p.vendor }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea; text-align:right; font-family:'IBM Plex Mono',monospace;">{{ p.amount }}</td></tr></sc-for>
-                <sc-if value="{{ opr.noPos }}" hint-placeholder-val="{{ false }}"><tr><td colspan="3" style="padding:8px 9px; border:1px solid #dbe3ea; color:#8a99a6;">No sub-vendor POs.</td></tr></sc-if>
+                <sc-for list="{{ opr.subQuotes }}" as="q" hint-placeholder-count="0"><tr><td style="padding:7px 9px; border:1px solid #dbe3ea;">{{ q.vendorName }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea; text-align:center;">{{ q.itemCount }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea; text-align:right; font-family:'IBM Plex Mono',monospace;">{{ q.baseDisp }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea; text-align:right; font-family:'IBM Plex Mono',monospace;">{{ q.gstDisp }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea; text-align:right; font-family:'IBM Plex Mono',monospace; font-weight:700;">{{ q.grandDisp }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea; color:#1f7a45; font-weight:600; font-size:10px;">{{ q.mark }}</td></tr></sc-for>
+                <sc-if value="{{ opr.hasSubQuotes }}" hint-placeholder-val="{{ true }}"><tr style="display:none;"><td></td></tr></sc-if>
+              </tbody>
+            </table>
+            <sc-if value="{{ opr.hasSubQuotes }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:11px; margin-bottom:6px;"><span style="color:#8a99a6;">Selected vendor:</span> <strong>{{ opr.selVendor }}</strong></div>
+            </sc-if>
+            <sc-if value="{{ opr.hasSelReason }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:10.5px; color:#9a5b15; background:#fbf3e8; border:1px solid #ecd9bf; border-radius:6px; padding:7px 10px; margin-bottom:14px;">Reason for not choosing lowest: {{ opr.selReason }}</div>
+            </sc-if>
+
+            <div style="font-weight:700; font-size:12px; color:#0f2840; margin:16px 0 6px; letter-spacing:.04em;">SUB-VENDOR PURCHASE ORDERS &amp; VENDOR PAYMENTS</div>
+            <sc-for list="{{ opr.pos }}" as="p" hint-placeholder-count="0">
+              <div style="border:1px solid #dbe3ea; border-radius:8px; padding:10px 12px; margin-bottom:9px;">
+                <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:6px; margin-bottom:6px;">
+                  <div style="font-size:11.5px;"><strong style="font-family:'IBM Plex Mono',monospace;">{{ p.poNo }}</strong> · {{ p.vendor }}</div>
+                  <div style="font-size:11px; color:#54646f;">Total <strong style="font-family:'IBM Plex Mono',monospace; color:#0f2840;">{{ p.grandDisp }}</strong> · Paid <strong style="font-family:'IBM Plex Mono',monospace; color:#1f7a45;">{{ p.paidDisp }}</strong> · Pending <strong style="font-family:'IBM Plex Mono',monospace; color:#b5701a;">{{ p.pendDisp }}</strong></div>
+                </div>
+                <table style="width:100%; border-collapse:collapse; font-size:10.5px; margin-bottom:6px;">
+                  <thead><tr style="color:#8a99a6;"><th style="text-align:left; padding:3px 6px; border-bottom:1px solid #eef2f5;">Item</th><th style="text-align:center; padding:3px 6px; border-bottom:1px solid #eef2f5;">Qty</th><th style="text-align:right; padding:3px 6px; border-bottom:1px solid #eef2f5;">Rate</th><th style="text-align:right; padding:3px 6px; border-bottom:1px solid #eef2f5;">GST</th></tr></thead>
+                  <tbody>
+                    <sc-for list="{{ p.items }}" as="it" hint-placeholder-count="0"><tr><td style="padding:3px 6px;">{{ it.desc }}</td><td style="padding:3px 6px; text-align:center;">{{ it.qty }}</td><td style="padding:3px 6px; text-align:right; font-family:'IBM Plex Mono',monospace;">{{ it.rateDisp }}</td><td style="padding:3px 6px; text-align:right;">{{ it.gst }}</td></tr></sc-for>
+                  </tbody>
+                </table>
+                <sc-if value="{{ p.hasPayments }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:9.5px; color:#8a99a6; text-transform:uppercase; letter-spacing:.05em; margin:4px 0 3px;">Payments to vendor</div>
+                  <table style="width:100%; border-collapse:collapse; font-size:10.5px;">
+                    <thead><tr style="color:#8a99a6;"><th style="text-align:left; padding:3px 6px;">Date</th><th style="text-align:left; padding:3px 6px;">Type</th><th style="text-align:left; padding:3px 6px;">Mode</th><th style="text-align:left; padding:3px 6px;">Reference</th><th style="text-align:right; padding:3px 6px;">Amount</th></tr></thead>
+                    <tbody>
+                      <sc-for list="{{ p.payments }}" as="vp" hint-placeholder-count="0"><tr><td style="padding:3px 6px;">{{ vp.dateDisp }}</td><td style="padding:3px 6px;">{{ vp.type }}</td><td style="padding:3px 6px;">{{ vp.mode }}</td><td style="padding:3px 6px;">{{ vp.reference }}</td><td style="padding:3px 6px; text-align:right; font-family:'IBM Plex Mono',monospace;">{{ vp.amountDisp }}</td></tr></sc-for>
+                    </tbody>
+                  </table>
+                </sc-if>
+              </div>
+            </sc-for>
+            <sc-if value="{{ opr.noPos }}" hint-placeholder-val="{{ false }}"><div style="font-size:11px; color:#8a99a6; margin-bottom:12px;">No sub-vendor POs raised.</div></sc-if>
+
+            <div style="font-weight:700; font-size:12px; color:#0f2840; margin:16px 0 6px; letter-spacing:.04em;">CUSTOMER PAYMENTS · ADVANCE &amp; PART</div>
+            <table style="width:100%; border-collapse:collapse; font-size:11px; margin-bottom:16px;">
+              <thead><tr style="background:#f0f4f7;"><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;">Date</th><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;">Type</th><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;">Mode</th><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;">Reference</th><th style="text-align:right; padding:7px 9px; border:1px solid #dbe3ea;">Amount</th></tr></thead>
+              <tbody>
+                <sc-for list="{{ opr.custPayments }}" as="cp" hint-placeholder-count="0"><tr><td style="padding:7px 9px; border:1px solid #dbe3ea;">{{ cp.dateDisp }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea;">{{ cp.type }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea;">{{ cp.mode }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea;">{{ cp.reference }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea; text-align:right; font-family:'IBM Plex Mono',monospace;">{{ cp.amountDisp }}</td></tr></sc-for>
+                <sc-if value="{{ opr.noCustPayments }}" hint-placeholder-val="{{ false }}"><tr><td colspan="5" style="padding:8px 9px; border:1px solid #dbe3ea; color:#8a99a6;">No customer payments recorded.</td></tr></sc-if>
               </tbody>
             </table>
 
-            <div style="font-weight:700; font-size:12px; color:#0f2840; margin:14px 0 6px; letter-spacing:.04em;">INVOICES</div>
+            <div style="font-weight:700; font-size:12px; color:#0f2840; margin:16px 0 6px; letter-spacing:.04em;">INVOICES</div>
             <table style="width:100%; border-collapse:collapse; font-size:11px; margin-bottom:16px;">
               <thead><tr style="background:#f0f4f7;"><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;">Invoice No</th><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;">Date</th><th style="text-align:right; padding:7px 9px; border:1px solid #dbe3ea;">Amount</th><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;">Status</th></tr></thead>
               <tbody>
                 <sc-for list="{{ opr.invs }}" as="iv" hint-placeholder-count="0"><tr><td style="padding:7px 9px; border:1px solid #dbe3ea; font-family:'IBM Plex Mono',monospace;">{{ iv.invoiceNo }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea;">{{ iv.dateDisp }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea; text-align:right; font-family:'IBM Plex Mono',monospace;">{{ iv.amountDisp }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea;">{{ iv.payStatus }}</td></tr></sc-for>
                 <sc-if value="{{ opr.noInvs }}" hint-placeholder-val="{{ false }}"><tr><td colspan="4" style="padding:8px 9px; border:1px solid #dbe3ea; color:#8a99a6;">No invoices raised.</td></tr></sc-if>
+              </tbody>
+            </table>
+
+            <div style="font-weight:700; font-size:12px; color:#0f2840; margin:16px 0 6px; letter-spacing:.04em;">SERVICE REPORTS</div>
+            <table style="width:100%; border-collapse:collapse; font-size:11px; margin-bottom:16px;">
+              <thead><tr style="background:#f0f4f7;"><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;">SR No</th><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;">Date</th><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;">Vessel</th><th style="text-align:left; padding:7px 9px; border:1px solid #dbe3ea;">Engineer</th></tr></thead>
+              <tbody>
+                <sc-for list="{{ opr.svc }}" as="sv" hint-placeholder-count="0"><tr><td style="padding:7px 9px; border:1px solid #dbe3ea; font-family:'IBM Plex Mono',monospace;">{{ sv.srNo }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea;">{{ sv.dateDisp }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea;">{{ sv.vessel }}</td><td style="padding:7px 9px; border:1px solid #dbe3ea;">{{ sv.engineer }}</td></tr></sc-for>
+                <sc-if value="{{ opr.noSvc }}" hint-placeholder-val="{{ false }}"><tr><td colspan="4" style="padding:8px 9px; border:1px solid #dbe3ea; color:#8a99a6;">No service reports linked.</td></tr></sc-if>
               </tbody>
             </table>
 
@@ -3467,11 +3518,32 @@ class Component extends DCLogic {
       orderNo: o.orderNo || '—', dateDisp: this.fmtDate(o.date), customer: o.customer || '—',
       poNumber: o.poNumber || '—', vessel: o.vessel || '—', location: o.location || '—',
       quoteRef: o.quoteRef || o.caseId || '—', status: o.status || '—', ccy: orderCcy,
+      jobScope: o.jobScope || '—',
       billed: orderFin.inv, cost: orderFin.cost, received: orderFin.received, pending: orderFin.pending, profit: orderFin.profit,
-      pos: (o.vendorPOs||[]).filter(p => !p.cancelled).map(p => ({ poNo: p.poNo || '—', vendor: p.vendorName || '—', amount: this.fmt((p.items||[]).reduce((a,it)=>a+(Number(it.rate)||0)*(Number(it.qty)||0),0)*(1+(Number(p.gst)||0)/100), p.currency||'INR') })),
+      // -- sub-vendor quote comparison --
+      subQuotes: orderSubQuoteRows.map(r => ({ vendorName: r.vendorName, itemCount: r.itemCount, currency: r.currency, baseDisp: r.baseDisp, gstDisp: r.gstDisp, grandDisp: r.grandDisp, mark: r.isSelected ? '✓ Selected' : (r.isLowest ? 'Lowest' : '') })),
+      hasSubQuotes: orderSubQuoteRows.length > 0,
+      selVendor: orderSelectedVendorName || '—',
+      selReason: (orderCase && orderCase.subSelectReason) || '',
+      hasSelReason: !!(orderCase && orderCase.subSelectReason),
+      // -- sub-vendor purchase orders (with line items + vendor payments) --
+      pos: (o.vendorPOs||[]).filter(p => !p.cancelled).map(p => { const t = this.poTotal(p); const pp = this.poPaid(p); const paid = p.currency==='USD'?pp.usd:pp.inr; return {
+        poNo: p.poNo || '—', vendor: p.vendorName || '—', ccy: p.currency,
+        grandDisp: this.fmt(t.grand, p.currency), paidDisp: this.fmt(paid, p.currency), pendDisp: this.fmt(t.grand - paid, p.currency),
+        items: (p.items||[]).map(it => ({ desc: it.desc || '—', qty: String(it.qty||''), rateDisp: this.fmt(Number(it.rate)||0, p.currency), gst: (Number(it.gst)||0)+'%' })),
+        payments: (p.payments||[]).map(v => ({ dateDisp: this.fmtDate(v.date), amountDisp: this.fmt(Number(v.amount)||0, v.currency), mode: v.mode || '—', reference: v.reference || '—', type: v.type || '—' })),
+        hasPayments: (p.payments||[]).length > 0,
+      }; }),
       noPos: (o.vendorPOs||[]).filter(p => !p.cancelled).length === 0,
+      // -- customer payments (advance & part, date-wise) --
+      custPayments: (o.payments||[]).map(p => ({ dateDisp: this.fmtDate(p.date), amountDisp: this.fmt(Number(p.amount)||0, p.currency), mode: p.mode || '—', reference: p.reference || '—', type: p.type || '—' })),
+      noCustPayments: (o.payments||[]).length === 0,
+      // -- invoices --
       invs: (o.invoiceIds||[]).map(id => s.invoices.find(x => String(x.id)===String(id))).filter(Boolean).filter(iv => !iv.cancelled).map(iv => { const d = this.computeDoc(iv.items, iv.currency, { type: iv.discountType, value: iv.discountValue }); const recv = this.invoiceReceived(iv); return { invoiceNo: iv.invoiceNo, dateDisp: this.fmtDate(iv.invoiceDate), amountDisp: this.fmt(d.grand, iv.currency), payStatus: recv<=0?'Awaiting':(recv>=d.grand-0.5?'Received':'Partial') }; }),
       noInvs: (o.invoiceIds||[]).map(id => s.invoices.find(x => String(x.id)===String(id))).filter(Boolean).filter(iv => !iv.cancelled).length === 0,
+      // -- service reports (number + engineer) --
+      svc: s.serviceReports.filter(x => String(x.orderId) === String(o.id)).map(x => ({ srNo: x.srNo || '—', engineer: x.engineer || '—', dateDisp: this.fmtDate(x.date), vessel: x.vessel || '—' })),
+      noSvc: s.serviceReports.filter(x => String(x.orderId) === String(o.id)).length === 0,
     };
     const orderFullyPaid = ofin.fullyPaid;
     const orderCommObj = this.orderCommission(o);
